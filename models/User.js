@@ -14,6 +14,15 @@ const userSchema = new mongoose.Schema({
             description: String
         }],
         default: []
+    },
+    cart: {
+        type: [{
+            _id: mongoose.Schema.Types.ObjectId,
+            productName: String,
+            price: Number,
+            description: String
+        }],
+        default: []
     }
 }, {collection: "Users"});
 
