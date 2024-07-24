@@ -28,6 +28,23 @@ const ProductCard = (props) =>{
                 console.log(error);
             } 
         }
+        const checkCartStatus = async() =>{
+            try{
+                const token = localStorage.getItem("token");
+                const response = await axios.get(`${apiUrl}/api/prod/products/cart/status`,{
+                    params: {productId: props.id},
+                    headers: {Authorization: token}
+                })
+                const { success, isInCart, message } = (await response).data;
+                if(success){
+                    console.log(message); 
+                    setSavedToCart(isInCart);
+                }
+            } catch(error){
+                console.log(error);
+            }
+        }
+        checkCartStatus();
         checkWishListStatus();
     }, [props.id, apiUrl]);
 
@@ -65,13 +82,50 @@ const ProductCard = (props) =>{
             console.log(error)
         }
     }
+
+    const ItemToCart = async () =>{
+        try{
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${apiUrl}/api/prod/products/cart`,{
+                productId: props.id,
+                productName: props.productName,
+                price: props.price,
+                description: props.description
+            },
+            {
+                headers: {Authorization: token}
+            }    
+        );
+            setSavedToCart(true);
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    const ItemOutCart = async () =>{
+        try{
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`${apiUrl}/api/prod/products/cart`,{
+                data: {productId: props.id},
+                headers: {Authorization: token}
+            })
+            setSavedToCart(false);
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
     return(
         <div className="container">
             <div className="product-card">
             <Link className="header" to={`Item/${props.id}/${props.productName}`}>{props.productName}</Link>
             <img className="product-img" src={props.imageUrl} alt="" />
             <p>${props.price}</p>
-            <button className="cart btn"><img src={cartSVG} alt="cart" /></button> {/* add toggle */}
+            {savedToCart ? <button className="cart btn" onClick={ItemOutCart}><img src={savedCartSVG} alt="cart" /></button>
+            :
+            <button className="cart btn" onClick={ItemToCart}><img src={cartSVG} alt="cart" /></button>
+            }
+             {/* add toggle */}
             {savedToWishlist ? <button className="star btn" onClick={ItemOutWishList}><img src={savedStarSVG} alt="wishlist" /></button>
             : 
             <button  className="star btn" onClick={ItemToWishList}><img src={starSVG} alt="wishlist" /></button>}
