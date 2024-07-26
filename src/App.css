@@ -127,10 +127,39 @@
 .sidebar-content a{
   margin-top: 20px;
   text-decoration: none;
+  font-size: 14pt;
   color: white;
   width: 100%;
+  margin-right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 
 }
+.sidebar-content img{
+  width: 60px;
+  height: 33px;
+  position: fixed;
+  z-index: 1;
+  left: 105px;
+
+}
+.sidebar-content p{
+  margin: 0;
+  width: 2px;
+  position: absolute;
+  margin-left: 40px;
+  z-index: 2;
+  font-size: 6pt;
+  top: 65px;
+  left: 92px;
+
+
+}
+
+
+
 .sidebar-content a:hover{
   border: black 2px;
   color: black

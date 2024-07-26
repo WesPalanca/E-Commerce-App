@@ -195,3 +195,19 @@ export const getCartTotal = async (req, res) =>{
         res.status(500).json({success: false, message: "something went wrong getting cart total"});
     }
 }
+
+export const getQuantityInCart = async (req,res) =>{
+    try{
+        const userId = req.user.userId;
+        const user = await Users.findOne({_id: userId});
+        if(!user){
+            res.status(404).json({success: false, message: "couldn't find user"});
+        }
+        const quantity = user.cart.length;
+        res.status(200).json({success:true, quantity, message: "got quantity"});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({success: false, message: "something went wrong getting cart quantity"});
+    }
+}

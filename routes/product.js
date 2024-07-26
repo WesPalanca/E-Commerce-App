@@ -1,4 +1,4 @@
-import { addToCart, addToWishList, checkCartStatus, checkWishlistStatus, getCartTotal, getProducts, getUserCart, getUserWishlist, removeFromCart, removeFromWishlist, searchProducts } from '../controllers/product.js';
+import { addToCart, addToWishList, checkCartStatus, checkWishlistStatus, getCartTotal, getProducts, getQuantityInCart, getUserCart, getUserWishlist, removeFromCart, removeFromWishlist, searchProducts } from '../controllers/product.js';
 import { verifyToken } from '../middleware/auth.js';
 import express from 'express';
 const router = express.Router();
@@ -19,6 +19,7 @@ router.delete('/products/cart', verifyToken, removeFromCart);
 router.get('/products/cart/',verifyToken, getUserCart);
 router.get('/products/cart/status',verifyToken, checkCartStatus);
 router.get('/products/cart/total', verifyToken, getCartTotal); //api/prod/products/cart/total
+router.get('/products/cart/quantity',verifyToken, getQuantityInCart); //api/prod/products/cart/quantity
 
 
 

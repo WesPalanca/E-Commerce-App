@@ -9,6 +9,7 @@ const Shop = () =>{
     const [products, setProducts] = useState();
     const [loading, setLoading] = useState(true);
     const [searchValue, setSearchValue] = useState("");
+    const [amountInCart, setAmountInCart] = useState();
 
     const fetchProducts = async () =>{
         try{
@@ -28,9 +29,36 @@ const Shop = () =>{
             console.log(error);
         }
     }
+    const fetchAmountInCart = async(token) =>{
+        try{
+            const response = await axios.get(`${apiUrl}/api/prod/products/cart/quantity`,{
+                headers: {Authorization: token}
+            });
+            const {success, quantity, message} = response.data;
+            if(success){
+                setAmountInCart(quantity);
+            }
+            else{
+                console.log(message);
+            }
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
     useEffect(()=>{
+        const token = localStorage.getItem("token");
+        if (token){
+            fetchAmountInCart(token);
+        }
         fetchProducts();
-    }, [])
+    }, [apiUrl])
+
+    
+
+
+
+
 
     const handleSearch = async (e) =>{
         e.preventDefault();
@@ -52,10 +80,78 @@ const Shop = () =>{
             console.log(error);
         }
     }
+    const ItemToWishList = async (id, productName, price, description) =>{
+        try{
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${apiUrl}/api/prod/products/wishlist`,{
+                productId: id,
+                productName: productName,
+                price: price,
+                description: description
+            },{
+                headers: {Authorization: token}
+            });
+
+            // setSavedToWishList(true);
+
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+    const ItemOutWishList = async (id) =>{
+        try{
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`${apiUrl}/api/prod/products/wishlist`,{
+                data: {productId: id},
+                headers: {Authorization: token}
+            });
+            // setSavedToWishList(false);
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
+    const ItemToCart = async (id, productName, price, description) =>{
+        try{
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${apiUrl}/api/prod/products/cart`,{
+                productId: id,
+                productName: productName,
+                price: price,
+                description: description
+            },
+            {
+                headers: {Authorization: token}
+            }    
+        );
+            // setSavedToCart(true);
+            fetchAmountInCart(token);
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    const ItemOutCart = async (id) =>{
+        try{
+            const token = localStorage.getItem("token");
+            const response = await axios.delete(`${apiUrl}/api/prod/products/cart`,{
+                data: {productId: id},
+                headers: {Authorization: token}
+            })
+            // setSavedToCart(false);
+            fetchAmountInCart(token);
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+
 
     return(
         <div className="container Shop">
-        <Sidebar />
+        <Sidebar amountInCart={amountInCart} />
             <h1 className='shop-header'>Shopping</h1>
             <form onSubmit={handleSearch} className="SearchForm">
                 <input placeholder="Search" type="text" className="search-bar" onChange={(e) => setSearchValue(e.target.value)} />
@@ -67,7 +163,17 @@ const Shop = () =>{
                 <div className="row product-card-container">
                     {products.map(card => 
                         <div className="col-md-3 mb-4 col-sm-3" key={card._id}>
-                            <ProductCard id={card._id} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
+                            <ProductCard id={card._id} 
+                            imageUrl={card.imageUrl} 
+                            description={card.description}
+                            productName={card.productName} 
+                            price={card.price}
+                            ToCart={ItemToCart}
+                            OutCart={ItemOutCart}
+                            ToWishList={ItemToWishList}
+                            OutWishList={ItemOutWishList}
+                            />
+                            
                         </div>
                     )}
                 </div>
