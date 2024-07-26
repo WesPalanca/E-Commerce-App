@@ -19,7 +19,7 @@ const ProductCard = (props) =>{
                 })
                 const {success, isInWishlist, message} = (await response).data;
                 if (success){
-                    console.log(message);
+                    
                     setSavedToWishList(isInWishlist);
                 }
             
@@ -37,7 +37,7 @@ const ProductCard = (props) =>{
                 })
                 const { success, isInCart, message } = (await response).data;
                 if(success){
-                    console.log(message); 
+                     
                     setSavedToCart(isInCart);
                 }
             } catch(error){

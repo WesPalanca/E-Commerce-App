@@ -180,3 +180,18 @@ export const checkCartStatus = async (req, res) =>{
     }
 }
 
+export const getCartTotal = async (req, res) =>{
+    try{
+        const userId = req.user.userId;
+        const user = await Users.findOne({_id: userId});
+        if(!user){
+            return res.status(404).json({success: false, message: "Couldn't find user"}) 
+        }
+        const cartTotal = parseFloat(user.cart.reduce((sum, item) => sum + item.price, 0).toFixed(2));
+        res.status(200).json({success: true, cartTotal, message: "got total"});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({success: false, message: "something went wrong getting cart total"});
+    }
+}

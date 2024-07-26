@@ -135,3 +135,51 @@
   border: black 2px;
   color: black
 }
+
+.Cart{
+
+}
+.cart-total{
+  position: fixed;
+  right: 0px;
+  bottom: 4px;
+  border: solid black 2px;
+  background-color: rgb(15, 32, 29);
+}
+.cart-total p{
+  font-size: 12pt;
+  color: white;
+
+}
+.cart-container{
+  flex-wrap: wrap;
+  height: 80vh;
+
+}
+.cart-card{
+  border: solid black 2px;
+  border-radius: 14px;
+  
+}
+.cart-card a{
+  text-decoration: none;
+  color: rgb(54, 117, 151);
+}
+
+.wishlist-message-container{
+  position: fixed;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  left: 0;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+
+}
+.wishlist-message{
+  
+  border: solid black 2px;
+  height: 400px;
+  width: 600px;
+}
