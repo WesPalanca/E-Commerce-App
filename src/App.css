@@ -22,7 +22,8 @@
 
 }
 .Shop{
-  list-style-type: none;
+  display: flex;
+  flex-direction: column;
 
 }
 
@@ -50,11 +51,7 @@
   border: solid black 2px;
   margin: 0 auto;
 }
-.product-card{
-  border: solid black 2px;
-  height: 200px;
-  width: 200px;
-}
+
 
 .shop-header{
   margin-top: 20px; /* Add space above the heading */
@@ -67,16 +64,72 @@
   margin-bottom: 20px;
 }
 
+
 .product-card-container {
-  max-height: 80vh; /* Adjust as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
   flex-wrap: wrap;
+  padding: 10px;
+  margin: 0, auto;
+  
 }
 
-/* Optional: Add padding and margins as needed */
-.product-card-container .row {
-  margin-left: 0;
-  margin-right: 0;
+
+.product-card-label{
+  display: flex;
+  flex-direction: column;
+  margin-top: 0px;
 }
+.product-card-buttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 50px;
+}
+.product-card{
+  border: solid black 2px;
+  height: 305px;
+  width: 250px;
+  margin: 10px;
+}
+
+@media (max-width: 1024px) {
+  .product-card {
+    width: 45%; 
+  }
+}
+
+/* Media query for devices with a max width of 768px (mobile) */
+@media (max-width: 768px) {
+  .product-card-container {
+    flex-direction: row; 
+  }
+
+  .product-card {
+    width: 90%; 
+  }
+}
+
+/* Media query for devices with a max width of 480px (small mobile) */
+@media (max-width: 480px) {
+  .product-card {
+    width: 100%; /* Full width on very small screens */
+  }
+}
+
+ .product-img{
+  height: 200px;
+  width: 200px;
+  margin-left: 0;
+  z-index: 0;
+  margin-top: 1px;
+  
+}
+
+
+/* Optional: Add padding and margins as needed */
 
 .back-link{
   position: fixed;
@@ -165,6 +218,7 @@
   color: black
 }
 
+
 .Cart{
 
 }
@@ -195,6 +249,8 @@
   color: rgb(54, 117, 151);
 }
 
+
+
 .wishlist-message-container{
   position: fixed;
   display: flex;
@@ -211,4 +267,27 @@
   border: solid black 2px;
   height: 400px;
   width: 600px;
+}
+
+.card-btn-container{
+  display: flex;
+  justify-content: space-evenly;
+  border: none;
+}
+
+.card-btn-container .remove-btn{
+  border: none;
+  color: gray;
+}
+.card-btn-container .remove-btn:hover{
+  border: none;
+  text-decoration: underline;   
+  color: rgb(48, 48, 48);
+}
+.card-btn-container .add-btn{
+  background-color: lightblue;
+}
+
+.card-btn-container .add-btn:hover{
+  background-color: rgb(78, 163, 191);
 }

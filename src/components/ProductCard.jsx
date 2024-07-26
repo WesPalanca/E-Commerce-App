@@ -65,29 +65,34 @@ const ProductCard = (props) =>{
     return(
         <div className="container">
             <div className="product-card">
+            <Link to={`/Item/${props.id}/${props.productName}`}><img className="product-img" src={props.imageUrl} alt="" /></Link>
+            <div className="product-card-label">
             <Link className="header" to={`Item/${props.id}/${props.productName}`}>{props.productName}</Link>
-            <img className="product-img" src={props.imageUrl} alt="" />
             <p>${props.price}</p>
-            {savedToCart ? <button className="cart btn" onClick={async () =>{
-               await props.OutCart(props.id); 
-                checkCartStatus();
-            }}><img src={savedCartSVG} alt="cart" /></button>
-            :
-            <button className="cart btn" onClick={async () =>{
-                await props.ToCart(props.id, props.productName, props.price, props.description);
-                checkCartStatus();
-                }}><img src={cartSVG} alt="cart" /></button>
-            }
-             {/* add toggle */}
-            {savedToWishlist ? <button className="star btn" onClick={async () =>{
-                await props.OutWishList(props.id); 
-                checkWishListStatus();
-            }}><img src={savedStarSVG} alt="wishlist" /></button>
-            : 
-            <button  className="star btn" onClick={async () =>{
-                await props.ToWishList(props.id, props.productName, props.price, props.description); 
-                checkWishListStatus();}}><img src={starSVG} alt="wishlist" /></button>}
-        </div>
+            
+                <div className="product-card-buttons">
+                {savedToCart ? <button className="cart btn" onClick={async () =>{
+                await props.OutCart(props.id); 
+                    checkCartStatus();
+                }}><img src={savedCartSVG} alt="cart" /></button>
+                :
+                <button className="cart btn" onClick={async () =>{
+                    await props.ToCart(props.id, props.productName, props.price, props.description);
+                    checkCartStatus();
+                    }}><img src={cartSVG} alt="cart" /></button>
+                }
+                {/* add toggle */}
+                {savedToWishlist ? <button className="star btn" onClick={async () =>{
+                    await props.OutWishList(props.id); 
+                    checkWishListStatus();
+                }}><img src={savedStarSVG} alt="wishlist" /></button>
+                : 
+                <button  className="star btn" onClick={async () =>{
+                    await props.ToWishList(props.id, props.productName, props.price, props.description); 
+                    checkWishListStatus();}}><img src={starSVG} alt="wishlist" /></button>}
+                </div>
+             </div>
+            </div>
         </div>
     )
 }
