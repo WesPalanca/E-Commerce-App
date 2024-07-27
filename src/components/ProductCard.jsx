@@ -5,7 +5,7 @@ import axios from "axios";
 import savedStarSVG from '../assets/savedStar.svg';
 import savedCartSVG from '../assets/savedCart.svg';
 import { useState, useEffect } from "react";
-import { checkCartStatus, checkWishlistStatus } from "../../controllers/product";
+
 const ProductCard = (props) =>{
     const apiUrl = import.meta.env.VITE_API_URL;
     const [savedToCart, setSavedToCart] = useState(false);
@@ -21,7 +21,7 @@ const ProductCard = (props) =>{
     const checkWishListStatus = async() => {
         try{
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${apiUrl}/api/prod/products/wishlist/status`,{
+            const response = await axios.get(`${apiUrl}/api/wish/wishlist/status`,{
                 params: {productId: props.id},
                 headers: { Authorization: token}
             })
@@ -42,7 +42,7 @@ const ProductCard = (props) =>{
     const checkCartStatus = async() =>{
         try{
             const token = localStorage.getItem("token");
-            const response = await axios.get(`${apiUrl}/api/prod/products/cart/status`,{
+            const response = await axios.get(`${apiUrl}/api/cart/status`,{
                 params: {productId: props.id},
                 headers: {Authorization: token}
             })

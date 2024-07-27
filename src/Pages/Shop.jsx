@@ -17,7 +17,7 @@ const Shop = () =>{
             console.log(response);
             const { allProducts, success, message } = response.data;
             if (success){
-                console.log(message);
+            
                 setProducts(allProducts);
                 setLoading(false);
 
@@ -31,7 +31,7 @@ const Shop = () =>{
     }
     const fetchAmountInCart = async(token) =>{
         try{
-            const response = await axios.get(`${apiUrl}/api/prod/products/cart/quantity`,{
+            const response = await axios.get(`${apiUrl}/api/cart/quantity`,{
                 headers: {Authorization: token}
             });
             const {success, quantity, message} = response.data;
@@ -83,7 +83,7 @@ const Shop = () =>{
     const ItemToWishList = async (id, productName, price, description) =>{
         try{
             const token = localStorage.getItem("token");
-            const response = await axios.post(`${apiUrl}/api/prod/products/wishlist`,{
+            const response = await axios.post(`${apiUrl}/api/wish/wishlist`,{
                 productId: id,
                 productName: productName,
                 price: price,
@@ -102,7 +102,7 @@ const Shop = () =>{
     const ItemOutWishList = async (id) =>{
         try{
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`${apiUrl}/api/prod/products/wishlist`,{
+            const response = await axios.delete(`${apiUrl}/api/wish/wishlist`,{
                 data: {productId: id},
                 headers: {Authorization: token}
             });
@@ -116,7 +116,7 @@ const Shop = () =>{
     const ItemToCart = async (id, productName, price, description) =>{
         try{
             const token = localStorage.getItem("token");
-            const response = await axios.post(`${apiUrl}/api/prod/products/cart`,{
+            const response = await axios.post(`${apiUrl}/api/cart/update`,{
                 productId: id,
                 productName: productName,
                 price: price,
@@ -136,7 +136,7 @@ const Shop = () =>{
     const ItemOutCart = async (id) =>{
         try{
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`${apiUrl}/api/prod/products/cart`,{
+            const response = await axios.delete(`${apiUrl}/api/cart/update`,{
                 data: {productId: id},
                 headers: {Authorization: token}
             })

@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import prodRoutes from './routes/product.js';
+import cartRoutes from './routes/cart.js';
+import wishRoutes from './routes/wishlist.js';
 
 dotenv.config();
 const app = express();
@@ -22,6 +24,8 @@ mongoose.connect(process.env.MONGO_URI,{
 
 app.use('/api/auth', authRoutes);
 app.use('/api/prod', prodRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/wish', wishRoutes);
 
 const PORT = process.env.PORT;
 

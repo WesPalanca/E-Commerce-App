@@ -20,7 +20,7 @@ const Cart = () =>{
     const fetchCart = async (token) =>{
         try{
 
-            const response = axios.get(`${apiUrl}/api/prod/products/cart`,{
+            const response = axios.get(`${apiUrl}/api/cart/user`,{
                 headers: {Authorization: token}
             });
             const {success, cart, message } = (await response).data;
@@ -39,7 +39,7 @@ const Cart = () =>{
     }
     const fetchCartTotal = async(token) =>{
         try{
-            const response = await axios.get(`${apiUrl}/api/prod/products/cart/total`,{
+            const response = await axios.get(`${apiUrl}/api/cart/total`,{
                 headers: {Authorization: token}
             }
             );
@@ -59,7 +59,7 @@ const Cart = () =>{
     const ItemOutCart = async (id) =>{
         try{
             const token = localStorage.getItem("token");
-            const response = await axios.delete(`${apiUrl}/api/prod/products/cart`,{
+            const response = await axios.delete(`${apiUrl}/api/cart/update`,{
                 data: {productId: id},
                 headers: {Authorization: token}
             })
@@ -89,9 +89,9 @@ const Cart = () =>{
                 </div>
                 <div className="cart-total">
             
-                    <p>Estimated total: ${total}</p>
+                    <p>Estimated total: <strong>${total}</strong></p>
                     <p>Sales tax will be calculated during checkout where applicable</p>
-                    <button onClick={() => navigate('/Checkout')}>checkout</button>
+                    <button className="checkout-btn btn btn-primary" onClick={() => navigate('/Checkout')}>Continue to payment</button>
                 </div>
            </div>
         </div>

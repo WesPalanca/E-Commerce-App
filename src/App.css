@@ -247,6 +247,8 @@
 .cart-container{
   flex-wrap: wrap;
   height: 80vh;
+  
+  
 
 }
 .cart-card{
@@ -265,11 +267,20 @@
   .cart-content{
     display: flex;
     flex-direction: column;
+  
+  }
+  .cart-container{
+    overflow-y: auto;
+    height: 80vh;
+    padding-bottom: 185px;
+    
   }
   .cart-total{
     position: fixed;
     bottom: 0;
     right: 0;
+    top: unset;
+    width: 100%;
   }
   .cart-card{
     width: 325px;
