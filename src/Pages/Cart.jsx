@@ -77,21 +77,23 @@ const Cart = () =>{
             <div className="back-link">
                 <Link to={'/Shop'}>back</Link>
             </div>
-            <h1>Cart</h1>
-           <div className="cart-container product-card-container"> 
-            {userCart == undefined || userCart.length == 0 ? <p>No products here!</p>: 
-                userCart.map(card => 
-                    <div className="col-md-3 mb-4 col-sm-3" key={card._id}>
-                        <CartCard onRemove={ItemOutCart} id={card._id} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
-                    </div>
-                )}
-            </div>
-            <div className="cart-total">
-        
-                <p>Estimated total: ${total}</p>
-                <p>Sales tax will be calculated during checkout where applicable</p>
-                <button onClick={() => navigate('/Checkout')}>checkout</button>
-            </div>
+            <h1>Your Shopping Cart</h1>
+           <div className="cart-content">
+            <div className="cart-container "> 
+                {userCart == undefined || userCart.length == 0 ? <p>No products here!</p>: 
+                    userCart.map(card => 
+                        <div className="col-md-3 mb-4 col-sm-3" key={card._id}>
+                            <CartCard onRemove={ItemOutCart} id={card._id} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
+                        </div>
+                    )}
+                </div>
+                <div className="cart-total">
+            
+                    <p>Estimated total: ${total}</p>
+                    <p>Sales tax will be calculated during checkout where applicable</p>
+                    <button onClick={() => navigate('/Checkout')}>checkout</button>
+                </div>
+           </div>
         </div>
     )
 }

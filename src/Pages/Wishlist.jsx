@@ -75,7 +75,7 @@ const Wishlist = () =>{
                 <Link to={'/Shop'}>back</Link>
             </div>
             <h1>Wishlist</h1>
-           <div className="wishlist-container product-card-container"> 
+           <div className="wishlist-container "> 
             {userWishlist == undefined || userWishlist.length == 0 ? <p>Empty</p>: 
                 userWishlist.map(card => 
                     <div className="col-md-3 mb-4 col-sm-3" key={card._id}>
