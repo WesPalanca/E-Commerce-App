@@ -1,4 +1,7 @@
 import Users from "../models/User.js";
+import Products from "../models/Product.js";
+import mongoose from "mongoose";
+
 export const getUserCart = async(req,res) =>{
     try{
         const userId = req.user.userId;
@@ -15,36 +18,40 @@ export const getUserCart = async(req,res) =>{
     }
 }
 
-export const addToCart = async(req,res) =>{
-    try{
-        const userId = req.user.userId;
-        const { productId, productName, price, description } = req.body;
-        const productTemplate = {
-            _id: productId,
-            productName: productName,
-            price: price,
-            description: description
-        }
-        const addToUser = await Users.findOneAndUpdate(
-            {_id: userId},
-            {$push: {cart: productTemplate}},
-            {new: true}
-        )
-        res.status(200).json({success: true, message: "added to cart"});
+export const addToCart = async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      const { productId, productName, price, description, imageUrl, quantity } = req.body;
+      const productTemplate = {
+        _id: productId,
+        uniqueId: new mongoose.Types.ObjectId(),
+        productName: productName,
+        price: price,
+        description: description,
+        imageUrl: imageUrl,
+        quantity: quantity
+      };
+      const addToUser = await Users.findOneAndUpdate(
+        { _id: userId },
+        { $push: { cart: productTemplate } },
+        { new: true }
+      );
+      res.status(200).json({ success: true, message: "added to cart" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ success: false, message: "Something went wrong adding to cart" });
     }
-    catch(error){
-        console.log(error);
-        res.status(500).json({success: false, message: "Something went wrong adding to cart"})
-    }
-}
+  };
+  
 
 export const removeFromCart = async(req,res) =>{
     try{
         const userId = req.user.userId;
-        const { productId } = req.body;
+        const { uniqueId } = req.body;
+        console.log(uniqueId);
         const removeFromUser = await Users.findOneAndUpdate(
             {_id: userId},
-            {$pull: {cart: {_id: productId}}},
+            {$pull: {cart: { uniqueId: uniqueId }}},
             {new: true}
         )
         res.status(200).json({success: true, message: "Removed from cart"});
