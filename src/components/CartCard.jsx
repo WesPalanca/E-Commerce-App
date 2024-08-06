@@ -6,11 +6,19 @@ const CartCard = (props) =>{
     return(
         <div className="container Cart">
             <div className="cart-card">
-                <Link to={`/Item/${props.id}/${props.productName}`}>{props.productName}</Link>
-                <p>${props.price}</p>
-                <p>{props.description}</p>
-                <div className="card-btn-container">
-                <button className="remove-btn btn" onClick={() =>props.onRemove(props.id)}>remove</button>
+                <img src={props.imageUrl} className="cart-img" />
+                <div className="cardIdentifiers">
+                    <Link to={`/Item/${props.id}/${props.productName}`}>{props.productName}</Link>
+                </div>
+                <div className="cardSecondary">
+                    <p>${props.price}</p>
+                    <p>x{props.quantity}</p>
+                    <p>{props.uniqueId}</p>
+                    <div className="card-btn-container">
+                        <button className="remove-btn btn" onClick={() =>props.onRemove(props.uniqueId)}>remove</button>
+                    </div>
+
+
                 </div>
 
             </div>

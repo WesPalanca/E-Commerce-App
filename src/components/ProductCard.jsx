@@ -67,7 +67,7 @@ const ProductCard = (props) =>{
             <div className="product-card">
             <Link to={`/Item/${props.id}/${props.productName}`}><img className="product-img" src={props.imageUrl} alt="" /></Link>
             <div className="product-card-label">
-            <Link className="header" to={`Item/${props.id}/${props.productName}`}>{props.productName}</Link>
+            <Link className="header" to={`/Item/${props.id}/${props.productName}`}>{props.productName}</Link>
             <p>${props.price}</p>
             
                 <div className="product-card-buttons">
@@ -77,7 +77,7 @@ const ProductCard = (props) =>{
                 }}><img src={savedCartSVG} alt="cart" /></button>
                 :
                 <button className="cart btn" onClick={async () =>{
-                    await props.ToCart(props.id, props.productName, props.price, props.description);
+                    await props.ToCart(props.id, props.productName, props.price, props.description, props.imageUrl);
                     checkCartStatus();
                     }}><img src={cartSVG} alt="cart" /></button>
                 }
@@ -88,7 +88,7 @@ const ProductCard = (props) =>{
                 }}><img src={savedStarSVG} alt="wishlist" /></button>
                 : 
                 <button  className="star btn" onClick={async () =>{
-                    await props.ToWishList(props.id, props.productName, props.price, props.description); 
+                    await props.ToWishList(props.id, props.productName, props.price, props.description, props.imageUrl); 
                     checkWishListStatus();}}><img src={starSVG} alt="wishlist" /></button>}
                 </div>
              </div>
