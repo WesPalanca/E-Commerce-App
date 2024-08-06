@@ -7,21 +7,11 @@ const userSchema = new mongoose.Schema({
     username: {type: String, required: true},
     password: {type: String, required: true},
     wishlist: {
-        type: [{
-            _id: mongoose.Schema.Types.ObjectId,
-            productName: String,
-            price: Number,
-            description: String
-        }],
+        type: [productSchema],
         default: []
     },
     cart: {
-        type: [{
-            _id: mongoose.Schema.Types.ObjectId,
-            productName: String,
-            price: Number,
-            description: String
-        }],
+        type: [productSchema],
         default: []
     }
 }, {collection: "Users"});
