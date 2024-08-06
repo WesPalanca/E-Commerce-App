@@ -12,7 +12,7 @@ const app = express();
 const allowedOrigins = process.env.VITE_IP ? [process.env.VITE_IP] : ['http://localhost:5173'];
 app.use(express.json());
 app.use(cors({
-    origin: allowedOrigins,
+    origin: allowedOrigins || "http://localhost:5173",
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));

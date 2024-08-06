@@ -6,6 +6,7 @@ import Shop from "./Pages/Shop.jsx";
 import Item from "./Pages/Item.jsx";
 import Wishlist from "./Pages/Wishlist.jsx";
 import Cart from "./Pages/Cart.jsx";
+import Checkout from "./Pages/Checkout.jsx";
 
 
 const App = () =>{
@@ -17,6 +18,7 @@ const App = () =>{
           <Route path='/Item/:id/:productName' element={<Item /> } />
           <Route path='/Wishlist' element={<Wishlist />} />
           <Route path='/Cart' element={<Cart />}/>
+          <Route path='/Checkout' element={<Checkout />} />
 
       </Routes>
   </Router>
