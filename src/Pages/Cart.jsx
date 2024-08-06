@@ -25,7 +25,8 @@ const Cart = () =>{
             });
             const {success, cart, message } = (await response).data;
             if(success){
-                console.log(message);
+                // console.log(message);
+                console.log(response.data);
                 setUserCart(cart);
             }
             else{
@@ -57,10 +58,11 @@ const Cart = () =>{
     }
 
     const ItemOutCart = async (id) =>{
+        console.log(id);
         try{
             const token = localStorage.getItem("token");
             const response = await axios.delete(`${apiUrl}/api/cart/update`,{
-                data: {productId: id},
+                data: {uniqueId: id},
                 headers: {Authorization: token}
             })
     
@@ -79,19 +81,27 @@ const Cart = () =>{
             </div>
             <h1>Your Shopping Cart</h1>
            <div className="cart-content">
+            <div>
             <div className="cart-container "> 
-                {userCart == undefined || userCart.length == 0 ? <p>No products here!</p>: 
-                    userCart.map(card => 
-                        <div className="col-md-3 mb-4 col-sm-3" key={card._id}>
-                            <CartCard onRemove={ItemOutCart} id={card._id} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
-                        </div>
+                {userCart == undefined || userCart.length == 0 ? <p>Your cart is empty </p>: 
+                    userCart.map((card, index) => 
+                        <div className="col-md-3 mb-4 col-sm-3" key={`${card._id}-${index}`}>
+                            <CartCard uniqueId={card.uniqueId} onRemove={ItemOutCart} id={card._id} quantity={card.quantity} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
+                        </div>  
                     )}
                 </div>
+                
+            </div>
+            
                 <div className="cart-total">
             
                     <p>Estimated total: <strong>${total}</strong></p>
-                    <p>Sales tax will be calculated during checkout where applicable</p>
-                    <button className="checkout-btn btn btn-primary" onClick={() => navigate('/Checkout')}>Continue to payment</button>
+                    <p>Review Your Products</p>
+                    <div className="cart-total-buttons">
+                        <button onClick={() =>navigate('/Shop')} className="btn btn-secondary">Continue Shopping</button>
+                        <button className="checkout-btn btn btn-primary" onClick={() => navigate('/Checkout')}>Continue to payment</button>
+                    </div>
+                
                 </div>
            </div>
         </div>

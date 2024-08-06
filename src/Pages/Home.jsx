@@ -12,8 +12,8 @@ const Home = () =>{
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const navigate = useNavigate();
-    const handleLogin = async (e) =>{
-        e.preventDefault();
+    const handleLogin = async (e = null) =>{
+       if(e) e.preventDefault();
         console.log(username + "\n" + password);
         try{
             const response = await axios.post(`${apiUrl}/api/auth/login`,{
@@ -59,6 +59,7 @@ const Home = () =>{
                 setLastName("");
                 setUsername("");
                 setPassword("");
+                handleLogin();
             }
             else{
                 console.log(message);
@@ -73,7 +74,6 @@ const Home = () =>{
     }
     return(
         <div className="Home container">
-            <h1>Wes.Shop</h1>
             {/* login form */}
             {showLogin && <form onSubmit={handleLogin}>
                 <h2>Login</h2>

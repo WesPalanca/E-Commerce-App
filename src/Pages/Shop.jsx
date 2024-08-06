@@ -14,7 +14,7 @@ const Shop = () =>{
     const fetchProducts = async () =>{
         try{
             const response = await axios.get(`${apiUrl}/api/prod/products`);
-            console.log(response);
+        
             const { allProducts, success, message } = response.data;
             if (success){
             
@@ -80,14 +80,15 @@ const Shop = () =>{
             console.log(error);
         }
     }
-    const ItemToWishList = async (id, productName, price, description) =>{
+    const ItemToWishList = async (id, productName, price, description, imageUrl) =>{
         try{
             const token = localStorage.getItem("token");
             const response = await axios.post(`${apiUrl}/api/wish/wishlist`,{
                 productId: id,
                 productName: productName,
                 price: price,
-                description: description
+                description: description,
+                imageUrl: imageUrl
             },{
                 headers: {Authorization: token}
             });
@@ -113,14 +114,15 @@ const Shop = () =>{
         }
     }
 
-    const ItemToCart = async (id, productName, price, description) =>{
+    const ItemToCart = async (id, productName, price, description, imageUrl) =>{
         try{
             const token = localStorage.getItem("token");
             const response = await axios.post(`${apiUrl}/api/cart/update`,{
                 productId: id,
                 productName: productName,
                 price: price,
-                description: description
+                description: description,
+                imageUrl: imageUrl
             },
             {
                 headers: {Authorization: token}
