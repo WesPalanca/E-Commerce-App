@@ -9,7 +9,6 @@ const Shop = () =>{
     const [products, setProducts] = useState();
     const [loading, setLoading] = useState(true);
     const [searchValue, setSearchValue] = useState("");
-    const [amountInCart, setAmountInCart] = useState();
 
     const fetchProducts = async () =>{
         try{
@@ -29,28 +28,8 @@ const Shop = () =>{
             console.log(error);
         }
     }
-    const fetchAmountInCart = async(token) =>{
-        try{
-            const response = await axios.get(`${apiUrl}/api/cart/quantity`,{
-                headers: {Authorization: token}
-            });
-            const {success, quantity, message} = response.data;
-            if(success){
-                setAmountInCart(quantity);
-            }
-            else{
-                console.log(message);
-            }
-        }
-        catch(error){
-            console.log(error);
-        }
-    }
+
     useEffect(()=>{
-        const token = localStorage.getItem("token");
-        if (token){
-            fetchAmountInCart(token);
-        }
         fetchProducts();
     }, [apiUrl])
 
@@ -151,12 +130,17 @@ const Shop = () =>{
     }
 
 
+    
     return(
         <div className="container Shop">
-        <Sidebar amountInCart={amountInCart} />
+        <Sidebar  />
             <h1 className='shop-header'>Shopping</h1>
             <form onSubmit={handleSearch} className="SearchForm">
-                <input placeholder="Search" type="text" className="search-bar" onChange={(e) => setSearchValue(e.target.value)} />
+                <input 
+                placeholder="Search"
+                type="text"
+                className="search-bar"
+                onChange={(e) => setSearchValue(e.target.value)} />
                 <button type="submit">Submit</button>
             </form>
             {

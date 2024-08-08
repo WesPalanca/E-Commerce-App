@@ -227,6 +227,157 @@
 }
 
 
+
+
+
+.continue-shopping{
+  display: flex;
+  justify-content: flex-start;
+  position: static;
+}
+
+.cardIdentifiers a{
+  font-size: 16pt;
+}
+
+.cardSecondary{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-left: 60px;
+}
+
+
+.wishlist-container{
+  flex-wrap: wrap;
+  height: 80vh;
+}
+
+.wishlist-card{
+  border: solid black 2px;
+  border-radius: 8px;
+  height: 150px;
+  width: 600px;
+}
+
+.wishlist-message-container{
+  position: fixed;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  left: 0;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+
+}
+.wishlist-message{
+  
+  border: solid black 2px;
+  height: 400px;
+  width: 600px;
+}
+
+.card-btn-container{
+  display: flex;
+  justify-content: space-evenly;
+  border: none;
+}
+
+.card-btn-container .remove-btn{
+  border: none;
+  color: gray;
+}
+.card-btn-container .remove-btn:hover{
+  border: none;
+  text-decoration: underline;   
+  color: rgb(48, 48, 48);
+}
+.card-btn-container .add-btn{
+  background-color: lightblue;
+}
+
+.card-btn-container .add-btn:hover{
+  background-color: rgb(78, 163, 191);
+}
+
+
+.item-page .item-img{
+  height: 400px;
+  width: 350px;
+}
+.item-page{
+  margin: auto;
+  height: 100vh;
+  width: 100%;
+  flex-wrap: wrap;
+
+}
+.item-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: solid black 2px;
+  margin-right: 5px;
+  width: 400px;
+}
+
+.item-bidding{
+  border: solid black 2px;
+}
+.item-pricing{
+  border: solid black 2px
+}
+
+.item-button-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.item-button-container button{
+  border-radius: 8px;
+  width: 80%;
+  height: 40px;
+  margin-top: 4px;
+}
+
+.item-reviews{
+  border: solid black 2px;
+}
+
+.review-form{
+  border: solid rgb(138, 122, 122) 2px;
+  height: 500px;
+  width: 50%;
+  position: fixed;
+  background-color: rgb(255, 255, 255);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-left: 0;
+  
+  
+}
+
+.Item{
+  display: flex;
+  justify-content: center;
+}
+
+
+.item-review{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: solid black 2px;
+}
+
+.item-description{
+  padding-top: 150px;
+  border: solid black 2px;
+}
+
+
 .Cart h3{
   margin-top: 50px;
   font-size: 24pt;
@@ -343,112 +494,9 @@
   }
   
 }
-
-.wishlist-card{
-  border: solid black 2px;
-  border-radius: 8px;
-  height: 150px;
-  width: 600px;
-}
-
-.wishlist-message-container{
-  position: fixed;
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  left: 0;
-  top: 0;
-  justify-content: center;
-  align-items: center;
-
-}
-.wishlist-message{
-  
-  border: solid black 2px;
-  height: 400px;
-  width: 600px;
-}
-
-.card-btn-container{
-  display: flex;
-  justify-content: space-evenly;
-  border: none;
-}
-
-.card-btn-container .remove-btn{
-  border: none;
-  color: gray;
-}
-.card-btn-container .remove-btn:hover{
-  border: none;
-  text-decoration: underline;   
-  color: rgb(48, 48, 48);
-}
-.card-btn-container .add-btn{
-  background-color: lightblue;
-}
-
-.card-btn-container .add-btn:hover{
-  background-color: rgb(78, 163, 191);
-}
-
-
-.item-page .item-img{
-  height: 400px;
-  width: 350px;
-}
-.item-page{
-  margin: auto;
-  height: 100vh;
-  width: 100%;
-  flex-wrap: wrap;
-
-}
-.item-content{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border: solid black 2px;
-  margin-right: 5px;
-  width: 400px;
-}
 .item-cart{
   border: solid black 2px;
   width: 300px;
-}
-
-.item-button-container{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.item-button-container button{
-  border-radius: 8px;
-  width: 80%;
-  height: 40px;
-  margin-top: 4px;
-}
-
-.item-reviews{
-  border: solid black 2px;
-}
-
-.review-form{
-  border: solid rgb(138, 122, 122) 2px;
-  height: 500px;
-  width: 50%;
-  position: fixed;
-  background-color: rgb(111, 110, 110, 0.5);
-  top: 0;
-  left:0;
-  margin-left: 0;
-  
-  
-}
-
-.Item{
-  display: flex;
-  justify-content: center;
 }
 
 .carted-message{
@@ -461,16 +509,3 @@
   height: 400px;
   width: 500px;
 }
-
-.item-review{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  border: solid black 2px;
-}
-
-.item-description{
-  padding-top: 150px;
-  border: solid black 2px;
-}
-

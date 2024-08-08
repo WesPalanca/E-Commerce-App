@@ -8,7 +8,7 @@ const Checkout = () => {
         expiration: "",
         cvv: "",
         cardFirstName: "",
-        cartLastName: "",
+        cardLastName: "",
         streetAddress: "",
         city: "",
         area: "",
@@ -80,8 +80,8 @@ const Checkout = () => {
                         type="text"
                         placeholder="Last Name"
                         onChange={handleChange}
-                        id="cartLastName"
-                        value={formData.cartLastName}
+                        id="cardLastName"
+                        value={formData.cardLastName}
                     />
                 </div>
                 <div className="form-group">

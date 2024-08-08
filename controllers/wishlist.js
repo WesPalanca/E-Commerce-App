@@ -1,4 +1,4 @@
-import Users from "../models/User.js";
+import User from "../models/User.js";
 export const addToWishList = async (req,res) =>{
     try{
         const userId = req.user.userId;
@@ -10,7 +10,7 @@ export const addToWishList = async (req,res) =>{
             description: description,
             imageUrl: imageUrl
         }
-        const addToUser = await Users.findOneAndUpdate(
+        const addToUser = await User.findOneAndUpdate(
             {_id: userId},
             {$push: {wishlist: productTemplate}},
             {new: true}
@@ -32,7 +32,7 @@ export const removeFromWishlist = async (req, res) =>{
     try{
         const userId = req.user.userId;
         const { productId } = req.body;
-        const user = await Users.findOneAndUpdate({_id: userId},
+        const user = await User.findOneAndUpdate({_id: userId},
             {$pull: {wishlist: {_id: productId}}},
             {new: true}
         )
@@ -49,7 +49,7 @@ export const checkWishlistStatus = async (req, res) =>{
 
         const userId = req.user.userId;
         const { productId } = req.query;
-        const user = await Users.findOne({_id: userId});
+        const user = await User.findOne({_id: userId});
         const isInWishlist = user.wishlist.some(item => item._id.toString() === productId);
         res.status(200).json({success: true, isInWishlist, message: "status updated"});
     }
@@ -62,7 +62,7 @@ export const checkWishlistStatus = async (req, res) =>{
 export const getUserWishlist = async(req,res) =>{
     try{
         const userId = req.user.userId;
-        const user = await Users.findOne({_id: userId});
+        const user = await User.findOne({_id: userId});
         if (!user){
             return res.status(401).json({success: false, message: "Could not find user."});
         }

@@ -5,9 +5,8 @@ import Home from "./Pages/Home.jsx";
 import Shop from "./Pages/Shop.jsx";
 import Item from "./Pages/Item.jsx";
 import Wishlist from "./Pages/Wishlist.jsx";
-import Cart from "./Pages/Cart.jsx";
 import Checkout from "./Pages/Checkout.jsx";
-
+import Cart from "./Pages/Cart.jsx";
 
 const App = () =>{
   return(
@@ -17,7 +16,7 @@ const App = () =>{
           <Route path='/Shop' element={<Shop /> } />
           <Route path='/Item/:id/:productName' element={<Item /> } />
           <Route path='/Wishlist' element={<Wishlist />} />
-          <Route path='/Cart' element={<Cart />}/>
+          <Route path="/Cart" element={<Cart />} />
           <Route path='/Checkout' element={<Checkout />} />
 
       </Routes>

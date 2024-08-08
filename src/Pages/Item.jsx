@@ -1,22 +1,26 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Review from "../components/Review";
-import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 const Item = () => {
   const { id } = useParams();
-  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [product, setProduct] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [showCartedMessage, setShowCartedMessage] = useState(false)
+  const [bidAmount, setBidAmount] = useState("");
   const [overallRating, setOverallRating] = useState(0);
+  const [showCartedMessage, setShowCartedMessage] = useState(false);
   const [reviewData, setReviewData] = useState({
     rating: 0,
     comment: "",
   });
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState("");
+
   const fetchProduct = async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/prod/products/item`, {
@@ -25,20 +29,50 @@ const Item = () => {
       const { success, product, message } = response.data;
 
       if (success) {
-        console.log(response.data)
         setProduct(product);
         setOverallRating(product.overallRating);
       } else {
         console.log(message);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching product", error);
     }
   };
-  
+
   useEffect(() => {
     fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    const handleNewBid = (data) => {
+      console.log("New bid received: ", data);
+      fetchProduct(); // Refresh product to reflect new bid
+    };
+
+    socket.on('newBid', handleNewBid);
+
+    return () => {
+      socket.off('newBid', handleNewBid);
+    };
+  }, []);
+
+  const handleBid = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${apiUrl}/api/bid/place`,
+        { productId: id, amount: bidAmount },
+        { headers: { Authorization: token } }
+      );
+      const { success, message } = response.data;
+      if (success) {
+        console.log(message);
+        socket.emit("newBid", { productId: id, amount: bidAmount });  
+      }
+    } catch (error) {
+      console.log("Error placing bid", error);
+    }
+  };
 
   const addReview = async (e) => {
     e.preventDefault();
@@ -55,52 +89,56 @@ const Item = () => {
           headers: { Authorization: token },
         }
       );
-      const {success, message} = response.data;
-      
-      if (success){
+      const { success, message } = response.data;
+
+      if (success) {
         console.log(message);
-    
-      }
-      else{
+        fetchProduct(); // Refresh the product data to show the new review
+      } else {
         console.log(message);
       }
+
       setReviewData({
         rating: 0,
         comment: "",
       });
       setShowReviewForm(false);
-      fetchProduct(); // Refresh the product data to show the new review
     } catch (error) {
-      console.log("Error happened", error);
+      console.log("Error adding review", error);
     }
   };
 
-  const handleAddToCart = () =>{
-    try{
-      console.log("Quantity before adding to cart" + quantity);
+  const handleAddToCart = () => {
+    try {
+      console.log("Quantity before adding to cart: " + quantity);
       const token = localStorage.getItem("token");
-      const response = axios.post(`${apiUrl}/api/cart/update`,{
+      const response = axios.post(`${apiUrl}/api/cart/update`, {
         productId: id,
         productName: product.productName,
         price: product.price,
         description: product.description,
         imageUrl: product.imageUrl,
         quantity: quantity
-      },
-      {
-        headers: {Authorization: token}
-      }
-    );
-    setShowCartedMessage(true);
+      }, {
+        headers: { Authorization: token }
+      });
+      setShowCartedMessage(true);
       
-    }
-    catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
-  const handleQuantity = (e) =>{
-    setQuantity(Number(e.target.value));
-  }
+  };
+
+  const handleQuantityChange = (e) => {
+    const value = Number(e.target.value);
+    if (value >= 1 && value <= 10) {
+      setQuantity(value);
+    } else if (value < 1) {
+      setQuantity(1);
+    } else if (value > 10) {
+      setQuantity(10);
+    }
+  };
 
   const reviewChange = (e) => {
     setReviewData({ ...reviewData, [e.target.id]: e.target.value });
@@ -124,53 +162,69 @@ const Item = () => {
             <p>{product.description}</p>
           </div>
 
-          <div className="item-cart col-md-2 col-sm-2">
-            <p>
-              Price: <strong>${product.price}</strong>
-            </p>
-            
-            <p>Amount In Stock: {product.amountInStock}</p>
-            <label htmlFor="quantity">Quantity: </label>
-            <select name="quantity" id="quantity" value={quantity} onChange={handleQuantity}>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-            <div className="item-button-container">
-              <button onClick={handleAddToCart} className="btn btn-primary">Add to Cart</button>
-              <button className="btn btn-warning">Buy Now</button>
+          {product.isAuctioning ? (
+            <div className="item-bidding col-md-2 col-sm-2">
+              {product.startingPrice >= product.currentBid ? 
+                <p>Starting price: <strong>${product.startingPrice}</strong></p> :
+                <div>
+                  <p>Current Bid: <strong>${product.currentBid}</strong></p>
+                  <p>Bids: ({product.quantityOfBids})</p>
+                </div>
+              }
+              <input
+                type="number"
+                value={bidAmount}
+                onChange={(e) => setBidAmount(e.target.value)}
+                placeholder="Enter bid amount"
+              />
+              <button onClick={handleBid}>Place Bid</button>
             </div>
-          </div>
+          ) : (
+            <div className="item-pricing col-md-2 col-sm-2">
+              <p>Price: <strong>${product.price}</strong></p>
+              <p>Amount In Stock: {product.amountInStock}</p>
+              <label htmlFor="quantity">Quantity: </label>
+              <input
+                type="text"
+                name="quantity"
+                id="quantity"
+                min={1}
+                max={10}
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+              />
+              <div className="item-button-container">
+                <button onClick={handleAddToCart} className="btn btn-primary">Add to Cart</button>
+                <button className="btn btn-warning">Buy Now</button>
+              </div>
+            </div>
+          )}
 
           <div className="item-reviews">
             <h3>Reviews</h3>
             <button onClick={() => setShowReviewForm(true)}>Write a Review</button>
             <p>Overall Customer Review Rating: {overallRating}</p>
-            {product.reviews.length !== 0 ? (
+            {product.reviews.length ? (
               <div className="item-review-container">
                 {product.reviews.map((review) => (
-                    <div key={review.username}>
-                        <Review
-                        key={review._id}
-                        username={review.username}
-                        rating={review.rating}
-                        comment={review.comment}
-                    />
-                    </div>
+                  <Review
+                    key={review._id} // Use unique key for each review
+                    username={review.username}
+                    rating={review.rating}
+                    comment={review.comment}
+                  />
                 ))}
               </div>
             ) : (
               <div>No Reviews</div>
             )}
-            
             {showCartedMessage && (
               <div className="carted-message">
                 <p>Added Item to Cart!</p>
-                <button onClick={() =>  {navigate('/Cart');}}>Go To Cart</button>
-                <button onClickCapture={() => setShowCartedMessage(false)}>Continue Shopping</button>
+                <button onClick={() => navigate('/Cart')}>Go To Cart</button>
+                <button onClick={() => setShowCartedMessage(false)}>Continue Shopping</button>
               </div>
             )}
-
             {showReviewForm && (
               <div className="review-form">
                 <form onSubmit={addReview}>

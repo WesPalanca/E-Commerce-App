@@ -1,19 +1,16 @@
 import { Link } from "react-router-dom";
-import cartSVG from '../assets/cart.svg';
 import starSVG from '../assets/star.svg';
 import axios from "axios";
 import savedStarSVG from '../assets/savedStar.svg';
-import savedCartSVG from '../assets/savedCart.svg';
 import { useState, useEffect } from "react";
 
 const ProductCard = (props) =>{
     const apiUrl = import.meta.env.VITE_API_URL;
-    const [savedToCart, setSavedToCart] = useState(false);
     const [savedToWishlist, setSavedToWishList] = useState(false);
 
     useEffect(() => {
 
-        checkCartStatus();
+    
         checkWishListStatus();
     }, [props.id, apiUrl]);
 
@@ -39,26 +36,7 @@ const ProductCard = (props) =>{
             console.log(error);
         } 
     }
-    const checkCartStatus = async() =>{
-        try{
-            const token = localStorage.getItem("token");
-            const response = await axios.get(`${apiUrl}/api/cart/status`,{
-                params: {productId: props.id},
-                headers: {Authorization: token}
-            })
-            const { success, isInCart, message } = (await response).data;
-            if(success){
-                 
-                setSavedToCart(isInCart);
-            }
-            else{
-                console.log(message);
-            }
-        } catch(error){
-            console.log(error);
-        }
-    }
-
+    
 
     
     
@@ -71,17 +49,6 @@ const ProductCard = (props) =>{
             <p>${props.price}</p>
             
                 <div className="product-card-buttons">
-                {savedToCart ? <button className="cart btn" onClick={async () =>{
-                await props.OutCart(props.id); 
-                    checkCartStatus();
-                }}><img src={savedCartSVG} alt="cart" /></button>
-                :
-                <button className="cart btn" onClick={async () =>{
-                    await props.ToCart(props.id, props.productName, props.price, props.description, props.imageUrl);
-                    checkCartStatus();
-                    }}><img src={cartSVG} alt="cart" /></button>
-                }
-                {/* add toggle */}
                 {savedToWishlist ? <button className="star btn" onClick={async () =>{
                     await props.OutWishList(props.id); 
                     checkWishListStatus();
