@@ -1,11 +1,11 @@
 
-import Products from "../models/Product.js";
-import Users from '../models/User.js';
-
+import Product from "../models/Product.js";
+import User from '../models/User.js';
+import Bid from "../models/Bid.js";
 
 export const getProducts = async(req, res) =>{
     try{
-        const allProducts = await Products.find({});
+        const allProducts = await Product.find({});
         res.status(200).json({success: true, allProducts, message: "Products fetched successfully"});
     }
     catch(error){
@@ -20,7 +20,7 @@ export const searchProducts = async(req, res) => {
         const { query } = req.query;
 
 
-        const products = await Products.find({
+        const products = await Product.find({
             productName: {$regex: query, $options: "i"},
         });
         if(products.length > 0){
@@ -39,21 +39,23 @@ export const searchProducts = async(req, res) => {
 
 export const getProduct = async (req, res) =>{
     try{
-        const {productId} = req.query;
-        let product = await Products.findById(productId);
+        const { productId } = req.query;
+        let product = await Product.findById(productId);
         if(!product){
            return res.status(404).json({success: false, message: "Couldn't find product"});
         }
         if(product.reviews.length != 0){
             const overallRating = (product.reviews.reduce((sum, review) => sum+=review.rating, 0)/ product.reviews.length).toFixed(1);
-            product = await Products.findByIdAndUpdate(
+            const quantityOfBids = await Bid.countDocuments({product: productId});
+            product = await Product.findByIdAndUpdate(
                 productId,
-            {$set: {overallRating: overallRating}},
+            {$set: {overallRating: overallRating, quantityOfBids: quantityOfBids}},
             {new: true});
+            
             res.status(200).json({success: true, product, message: "Got product"});
         }
         else{
-            product = await Products.findByIdAndUpdate(
+            product = await Product.findByIdAndUpdate(
                 productId,
             {$set: {overallRating: 0}},
             {new: true});
@@ -76,14 +78,14 @@ export const addReviewToProduct = async (req, res) =>{
         if(comment == ""){
             return res.status(400).json({success:false, message: "comment is empty"});
         }
-        const user = await Users.findById(userId);
+        const user = await User.findById(userId);
         const username = user.username;
         const reviewTemplate = {
             username: username,
             rating: rating,
             comment: comment
         }
-        const product = await Products.findOneAndUpdate(
+        const product = await Product.findOneAndUpdate(
             { _id: productId },
             { $push: {reviews: reviewTemplate}},
             { new: true}

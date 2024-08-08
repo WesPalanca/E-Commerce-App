@@ -13,9 +13,8 @@ const CartCard = (props) =>{
                 <div className="cardSecondary">
                     <p>${props.price}</p>
                     <p>x{props.quantity}</p>
-                    <p>{props.uniqueId}</p>
                     <div className="card-btn-container">
-                        <button className="remove-btn btn" onClick={() =>props.onRemove(props.uniqueId)}>remove</button>
+                        <button className="remove-btn btn" onClick={() =>props.onRemove(props.id)}>remove</button>
                     </div>
 
 

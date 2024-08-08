@@ -1,11 +1,9 @@
-import Users from "../models/User.js";
-import Products from "../models/Product.js";
-import mongoose from "mongoose";
+import User from "../models/User.js";
 
 export const getUserCart = async(req,res) =>{
     try{
         const userId = req.user.userId;
-        const user = await Users.findOne({_id: userId})
+        const user = await User.findOne({_id: userId})
         if (!user){
             return res.status(401).json({success: false, message: "Something went wrong trying to get user cart"})
         }
@@ -22,16 +20,25 @@ export const addToCart = async (req, res) => {
     try {
       const userId = req.user.userId;
       const { productId, productName, price, description, imageUrl, quantity } = req.body;
+      if (quantity === null || quantity === undefined){
+        return res.status(400).json({success: false, message: "invalid quantity"});
+      }
+      const user = await User.findById(userId);
+      if(!user) return res.status(404).json({success: false, message: "could not find user"});
+
+      const inCart = user.cart.find(item => item._id.toString() === productId);
+
+      if(inCart) return res.status(400).json({success: false, message: "Product already in cart"});
+
       const productTemplate = {
         _id: productId,
-        uniqueId: new mongoose.Types.ObjectId(),
         productName: productName,
         price: price,
         description: description,
         imageUrl: imageUrl,
         quantity: quantity
       };
-      const addToUser = await Users.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { _id: userId },
         { $push: { cart: productTemplate } },
         { new: true }
@@ -47,11 +54,10 @@ export const addToCart = async (req, res) => {
 export const removeFromCart = async(req,res) =>{
     try{
         const userId = req.user.userId;
-        const { uniqueId } = req.body;
-        console.log(uniqueId);
-        const removeFromUser = await Users.findOneAndUpdate(
+        const { productId } = req.body;
+        await User.findOneAndUpdate(
             {_id: userId},
-            {$pull: {cart: { uniqueId: uniqueId }}},
+            {$pull: {cart: { _id: productId }}},
             {new: true}
         )
         res.status(200).json({success: true, message: "Removed from cart"});
@@ -66,7 +72,7 @@ export const checkCartStatus = async (req, res) =>{
     try{
         const userId = req.user.userId;
         const { productId } = req.query;
-        const user = await Users.findOne({_id: userId});
+        const user = await User.findOne({_id: userId});
         const isInCart = user.cart.some(item => item._id.toString() === productId);
         res.status(200).json({success: true, isInCart, message: "status updated"})
     }
@@ -79,11 +85,11 @@ export const checkCartStatus = async (req, res) =>{
 export const getCartTotal = async (req, res) =>{
     try{
         const userId = req.user.userId;
-        const user = await Users.findOne({_id: userId});
+        const user = await User.findOne({_id: userId});
         if(!user){
             return res.status(404).json({success: false, message: "Couldn't find user"}) 
         }
-        const cartTotal = parseFloat(user.cart.reduce((sum, item) => sum + item.price, 0).toFixed(2));
+        const cartTotal = parseFloat(user.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2));
         res.status(200).json({success: true, cartTotal, message: "got total"});
     }
     catch(error){
@@ -95,7 +101,7 @@ export const getCartTotal = async (req, res) =>{
 export const getQuantityInCart = async (req,res) =>{
     try{
         const userId = req.user.userId;
-        const user = await Users.findOne({_id: userId});
+        const user = await User.findOne({_id: userId});
         if(!user){
             res.status(404).json({success: false, message: "couldn't find user"});
         }

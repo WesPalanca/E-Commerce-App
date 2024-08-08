@@ -62,7 +62,7 @@ const Cart = () =>{
         try{
             const token = localStorage.getItem("token");
             const response = await axios.delete(`${apiUrl}/api/cart/update`,{
-                data: {uniqueId: id},
+                data: {productId: id},
                 headers: {Authorization: token}
             })
     
@@ -86,7 +86,7 @@ const Cart = () =>{
                 {userCart == undefined || userCart.length == 0 ? <p>Your cart is empty </p>: 
                     userCart.map((card, index) => 
                         <div className="col-md-3 mb-4 col-sm-3" key={`${card._id}-${index}`}>
-                            <CartCard uniqueId={card.uniqueId} onRemove={ItemOutCart} id={card._id} quantity={card.quantity} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
+                            <CartCard onRemove={ItemOutCart} id={card._id} quantity={card.quantity} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
                         </div>  
                     )}
                 </div>

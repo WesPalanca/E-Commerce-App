@@ -33,6 +33,7 @@ const Wishlist = () =>{
             console.log(error);
         }
     }
+
     const ItemToCart = async (id, productName, price, description) =>{
         try{
             const token = localStorage.getItem("token");
@@ -53,6 +54,7 @@ const Wishlist = () =>{
             console.log(error);
         }
     }
+
 
     const ItemOutWishList = (id) =>{
         try{
@@ -88,7 +90,7 @@ const Wishlist = () =>{
                     <div className="wishlist-message">
                         <h3>Added To Your Cart!</h3>
                         <button onClick={() => setShowAddedMessage(false)}>Continue Shopping</button>
-                        <button onClick={() => navigate('/Cart')}>View My Cart</button>
+
                     </div>
                 </div>
                     }
