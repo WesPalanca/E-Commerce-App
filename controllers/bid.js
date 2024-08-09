@@ -19,13 +19,37 @@ export const placeBid = async (req, res) => {
             amount: req.body.amount
         });
         await bid.save();
+        const quantityOfBids = await Bid.countDocuments({ product: productId });
         product.currentBid = req.body.amount;
         product.highestBidder = req.user.userId;
+        product.quantityOfBids = quantityOfBids;
         await product.save();
         res.status(201).json({success: true, message: "Placed bid"});
     }
     catch(error){
         console.log(error);
         res.status(500).json({success: false, message: error});
+    }
+}
+
+export const getUserBidStatus = async (req, res) =>{
+    try{
+        const productId = req.query.productId;
+        const userId = req.user.userId;
+        const product = await Product.findById(productId);
+        if(!product){
+            return res.status(404).json({success: false, message: "couldn't find product"});
+        }
+        else if(product.highestBidder?.toString() === userId.toString()){
+            return res.status(200).json({success: true, message: "You are the highest Bidder!", isHighestBidder: true});
+        }
+        else{
+            return res.status(200).json({success: true, message: "Your are being outbid!", isHighestBidder: false});
+        }
+
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({success: false, message: "something went wrong trying to check user bid status"})
     }
 }

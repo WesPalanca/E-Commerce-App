@@ -84,7 +84,9 @@ const Home = () =>{
                     <div className="form-control"><input placeholder="password" onChange={(e) => setPassword(e.target.value)} type="password" /></div>
                 </div>
                 <button className="btn btn-primary" type="submit">Submit</button>
-                <button className="btn btn-secondary" onClick={(e) => {setShowRegister(true); setShowLogin(false);}}>Register</button>
+                <button className="btn btn-secondary" onClick={(e) => {setShowRegister(true); setShowLogin(false);}}>
+                    Register
+                </button>
             </form>}
 
             {/* register form */}

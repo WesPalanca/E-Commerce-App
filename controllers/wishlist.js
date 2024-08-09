@@ -2,13 +2,14 @@ import User from "../models/User.js";
 export const addToWishList = async (req,res) =>{
     try{
         const userId = req.user.userId;
-        const { productId, productName, price, description, imageUrl } = req.body;
+        const { productId, productName, price, description, imageUrl, isAuctioning } = req.body;
         const productTemplate = {
             _id: productId,
             productName: productName,
             price: price,
             description: description,
-            imageUrl: imageUrl
+            imageUrl: imageUrl,
+            isAuctioning: isAuctioning
         }
         const addToUser = await User.findOneAndUpdate(
             {_id: userId},

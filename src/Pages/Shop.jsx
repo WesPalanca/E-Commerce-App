@@ -16,7 +16,7 @@ const Shop = () =>{
         
             const { allProducts, success, message } = response.data;
             if (success){
-            
+                console.log(response.data);
                 setProducts(allProducts);
                 setLoading(false);
 
@@ -59,7 +59,7 @@ const Shop = () =>{
             console.log(error);
         }
     }
-    const ItemToWishList = async (id, productName, price, description, imageUrl) =>{
+    const ItemToWishList = async (id, productName, price, description, imageUrl, isAuctioning) =>{
         try{
             const token = localStorage.getItem("token");
             const response = await axios.post(`${apiUrl}/api/wish/wishlist`,{
@@ -67,7 +67,8 @@ const Shop = () =>{
                 productName: productName,
                 price: price,
                 description: description,
-                imageUrl: imageUrl
+                imageUrl: imageUrl,
+                isAuctioning: isAuctioning
             },{
                 headers: {Authorization: token}
             });
@@ -101,7 +102,8 @@ const Shop = () =>{
                 productName: productName,
                 price: price,
                 description: description,
-                imageUrl: imageUrl
+                imageUrl: imageUrl,
+                quantity: 1
             },
             {
                 headers: {Authorization: token}
@@ -153,6 +155,8 @@ const Shop = () =>{
                             imageUrl={card.imageUrl} 
                             description={card.description}
                             productName={card.productName} 
+                            isAuctioning={card.isAuctioning}
+                            currentBid={card.currentBid}
                             price={card.price}
                             ToCart={ItemToCart}
                             OutCart={ItemOutCart}

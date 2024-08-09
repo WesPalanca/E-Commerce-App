@@ -2,6 +2,7 @@
 import Product from "../models/Product.js";
 import User from '../models/User.js';
 import Bid from "../models/Bid.js";
+import mongoose from "mongoose";
 
 export const getProducts = async(req, res) =>{
     try{
@@ -37,39 +38,35 @@ export const searchProducts = async(req, res) => {
 }
 
 
-export const getProduct = async (req, res) =>{
-    try{
+export const getProduct = async (req, res) => {
+    try {
         const { productId } = req.query;
         let product = await Product.findById(productId);
-        if(!product){
-           return res.status(404).json({success: false, message: "Couldn't find product"});
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Couldn't find product" });
         }
-        if(product.reviews.length != 0){
-            const overallRating = (product.reviews.reduce((sum, review) => sum+=review.rating, 0)/ product.reviews.length).toFixed(1);
-            const quantityOfBids = await Bid.countDocuments({product: productId});
-            product = await Product.findByIdAndUpdate(
-                productId,
-            {$set: {overallRating: overallRating, quantityOfBids: quantityOfBids}},
-            {new: true});
-            
-            res.status(200).json({success: true, product, message: "Got product"});
-        }
-        else{
-            product = await Product.findByIdAndUpdate(
-                productId,
-            {$set: {overallRating: 0}},
-            {new: true});
-            res.status(200).json({success: true, product, message: "Got Product"})
-        }
-        
-        
 
-    }
-    catch(error){
+        const quantityOfBids = await Bid.countDocuments({ product: productId });
+        const updateData = { quantityOfBids: quantityOfBids };
+
+        if (product.reviews.length !== 0) {
+            const overallRating = (product.reviews.reduce((sum, review) => sum += review.rating, 0) / product.reviews.length).toFixed(1);
+            updateData.overallRating = overallRating;
+        }
+
+        await Product.findByIdAndUpdate(
+            productId,
+            { $set: updateData },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, product, message: "Got product" });
+    } catch (error) {
         console.log(error);
-        res.status(500).json({success: false, message: "something went wrong trying to get product"})
+        res.status(500).json({ success: false, message: "Something went wrong trying to get product" });
     }
 }
+
 
 export const addReviewToProduct = async (req, res) =>{
     try{
@@ -85,7 +82,7 @@ export const addReviewToProduct = async (req, res) =>{
             rating: rating,
             comment: comment
         }
-        const product = await Product.findOneAndUpdate(
+        await Product.findOneAndUpdate(
             { _id: productId },
             { $push: {reviews: reviewTemplate}},
             { new: true}

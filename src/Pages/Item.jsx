@@ -1,3 +1,5 @@
+import star from "../assets/star.svg";
+import savedStar from "../assets/savedStar.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -13,13 +15,18 @@ const Item = () => {
   const [product, setProduct] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [bidAmount, setBidAmount] = useState("");
+  const [isInCart, setIsInCart] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
   const [overallRating, setOverallRating] = useState(0);
   const [showCartedMessage, setShowCartedMessage] = useState(false);
+  const [isHighestBidder, setIsHighestBidder] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
   const [reviewData, setReviewData] = useState({
     rating: 0,
     comment: "",
   });
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [bidStatusMessage, setBidStatusMessage] = useState("");
 
   const fetchProduct = async () => {
     try {
@@ -29,8 +36,11 @@ const Item = () => {
       const { success, product, message } = response.data;
 
       if (success) {
+      
         setProduct(product);
+        console.log(product);
         setOverallRating(product.overallRating);
+        checkBiddingStatus();
       } else {
         console.log(message);
       }
@@ -39,22 +49,76 @@ const Item = () => {
     }
   };
 
+  const checkCartStatus = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${apiUrl}/api/cart/status`, {
+        params: { productId: id },
+        headers: { Authorization: token },
+      });
+      const { success, isInCart, message } = response.data;
+      if (success) {
+        setIsInCart(isInCart);
+      } else {
+        console.log(message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkWishlistStatus = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${apiUrl}/api/wish/status`, {
+        params: { productId: id },
+        headers: { Authorization: token },
+      });
+      const { success, isInWishlist, message } = response.data;
+      if (success) {
+        setIsInWishlist(isInWishlist);
+      } else {
+        console.log(message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkBiddingStatus = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${apiUrl}/api/bid/status`, {
+        params: {
+          productId: id,
+        },
+        headers: { Authorization: token },
+      });
+      const { success, message, isHighestBidder} = response.data;
+      if (success) {
+        setBidStatusMessage(message);
+        setIsHighestBidder(isHighestBidder);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
+    checkCartStatus();
+    checkWishlistStatus();
+    checkBiddingStatus();
     fetchProduct();
-  }, [id]);
-
-  useEffect(() => {
-    const handleNewBid = (data) => {
-      console.log("New bid received: ", data);
-      fetchProduct(); // Refresh product to reflect new bid
-    };
-
-    socket.on('newBid', handleNewBid);
-
+    // WebSocket event listeners
+    socket.on("newBid", (data) => {
+      if (data.productId === id) {
+        fetchProduct();
+      }
+    });
     return () => {
-      socket.off('newBid', handleNewBid);
+      socket.off("newBid");
     };
-  }, []);
+  }, [id]);
 
   const handleBid = async () => {
     try {
@@ -67,7 +131,9 @@ const Item = () => {
       const { success, message } = response.data;
       if (success) {
         console.log(message);
-        socket.emit("newBid", { productId: id, amount: bidAmount });  
+        socket.emit("newBid", { productId: id, amount: bidAmount });
+        fetchProduct(); // Refresh the product data to show the updated quantity of bids
+        
       }
     } catch (error) {
       console.log("Error placing bid", error);
@@ -110,33 +176,65 @@ const Item = () => {
 
   const handleAddToCart = () => {
     try {
-      console.log("Quantity before adding to cart: " + quantity);
       const token = localStorage.getItem("token");
-      const response = axios.post(`${apiUrl}/api/cart/update`, {
-        productId: id,
-        productName: product.productName,
-        price: product.price,
-        description: product.description,
-        imageUrl: product.imageUrl,
-        quantity: quantity
-      }, {
-        headers: { Authorization: token }
-      });
+      const response = axios.post(
+        `${apiUrl}/api/cart/update`,
+        {
+          productId: id,
+          productName: product.productName,
+          price: product.price,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          quantity: quantity,
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
       setShowCartedMessage(true);
-      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAddToWishlist = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+  
+      const response = await axios.post(
+        `${apiUrl}/api/wish/wishlist`,
+        {
+          productId: id,
+          productName: product.productName,
+          price: product.price,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          isAuctioning: product.isAuctioning
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
+      navigate(0);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleQuantityChange = (e) => {
-    const value = Number(e.target.value);
-    if (value >= 1 && value <= 10) {
-      setQuantity(value);
-    } else if (value < 1) {
+    const value = parseInt(e.target.value, 10);
+    if (value < 1) {
+      setValidationMessage("Quantity cannot be less than 1.");
       setQuantity(1);
-    } else if (value > 10) {
-      setQuantity(10);
+    } else if (value > product.amountInStock) {
+      setValidationMessage(
+        `Quantity cannot exceed the amount in stock (${product.amountInStock}).`
+      );
+      setQuantity(product.amountInStock);
+    } else {
+      setValidationMessage(""); // Clear the message if quantity is valid
+      setQuantity(value);
     }
   };
 
@@ -164,13 +262,19 @@ const Item = () => {
 
           {product.isAuctioning ? (
             <div className="item-bidding col-md-2 col-sm-2">
-              {product.startingPrice >= product.currentBid ? 
-                <p>Starting price: <strong>${product.startingPrice}</strong></p> :
+              {product.startingPrice >= product.currentBid ? (
+                <p>
+                  Starting price: <strong>${product.startingPrice}</strong>
+                </p>
+              ) : (
                 <div>
-                  <p>Current Bid: <strong>${product.currentBid}</strong></p>
+                  <p>
+                    Current Bid: <strong>${product.currentBid}</strong>
+                  </p>
                   <p>Bids: ({product.quantityOfBids})</p>
+                  <p className={`text ${isHighestBidder ? "text-success" : "text-danger"}`}>Bid status: {bidStatusMessage}</p>
                 </div>
-              }
+              )}
               <input
                 type="number"
                 value={bidAmount}
@@ -178,31 +282,81 @@ const Item = () => {
                 placeholder="Enter bid amount"
               />
               <button onClick={handleBid}>Place Bid</button>
+              {!isInWishlist ? (
+                  <button
+                    onClick={handleAddToWishlist}
+                    className="btn btn-light btn-outline-secondary"
+                  >
+                    Wishlist <img src={star} alt="" />
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => navigate("/Wishlist")}
+                  >
+                    Wishlist <img src={savedStar} alt="" />
+                  </button>
+                )}
             </div>
           ) : (
             <div className="item-pricing col-md-2 col-sm-2">
-              <p>Price: <strong>${product.price}</strong></p>
+              <p>
+                Price: <strong>${product.price}</strong>
+              </p>
               <p>Amount In Stock: {product.amountInStock}</p>
               <label htmlFor="quantity">Quantity: </label>
               <input
-                type="text"
+                type="number"
                 name="quantity"
                 id="quantity"
                 min={1}
-                max={10}
+                max={product.amountInStock}
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={handleQuantityChange}
               />
+              <p>{validationMessage}</p>
               <div className="item-button-container">
-                <button onClick={handleAddToCart} className="btn btn-primary">Add to Cart</button>
+                {!isInCart ? (
+                  <button
+                    onClick={handleAddToCart}
+                    className="btn btn-primary"
+                  >
+                    Add to Cart
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-success"
+                    onClick={() => navigate("/Cart")}
+                  >
+                    Saved To Cart!
+                  </button>
+                )}
                 <button className="btn btn-warning">Buy Now</button>
+                {!isInWishlist ? (
+                  <button
+                    onClick={handleAddToWishlist}
+                    className="btn btn-light btn-outline-secondary"
+                  >
+                    Wishlist <img src={star} alt="" />
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => navigate("/Wishlist")}
+                  >
+                    Wishlist <img src={savedStar} alt="" />
+                  </button>
+                )}
               </div>
+              {/* make better css */}
             </div>
           )}
 
           <div className="item-reviews">
             <h3>Reviews</h3>
-            <button onClick={() => setShowReviewForm(true)}>Write a Review</button>
+            <button onClick={() => setShowReviewForm(true)}>
+              Write a Review
+            </button>
             <p>Overall Customer Review Rating: {overallRating}</p>
             {product.reviews.length ? (
               <div className="item-review-container">
@@ -221,8 +375,15 @@ const Item = () => {
             {showCartedMessage && (
               <div className="carted-message">
                 <p>Added Item to Cart!</p>
-                <button onClick={() => navigate('/Cart')}>Go To Cart</button>
-                <button onClick={() => setShowCartedMessage(false)}>Continue Shopping</button>
+                <button onClick={() => navigate("/Cart")}>Go To Cart</button>
+                <button
+                  onClick={() => {
+                    setShowCartedMessage(false);
+                    navigate(0);
+                  }}
+                >
+                  Continue Shopping
+                </button>
               </div>
             )}
             {showReviewForm && (
@@ -252,7 +413,12 @@ const Item = () => {
                     />
                   </div>
                   <button type="submit">Submit</button>
-                  <button type="button" onClick={() => setShowReviewForm(false)}>Cancel</button>
+                  <button
+                    type="button"
+                    onClick={() => setShowReviewForm(false)}
+                  >
+                    Cancel
+                  </button>
                 </form>
               </div>
             )}

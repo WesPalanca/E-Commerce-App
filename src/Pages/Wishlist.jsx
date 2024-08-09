@@ -16,11 +16,12 @@ const Wishlist = () =>{
     }, [])
     const fetchWishlist = async (token) =>{
         try{
-            const response = axios.get(`${apiUrl}/api/wish/wishlist`,{
+            const response = await axios.get(`${apiUrl}/api/wish/wishlist`,{
                 headers: {Authorization: token}
             });
             const {success, wishlist, message } = (await response).data;
             if(success){
+                console.log((await response).data);
                 console.log(message);
                 setUserWishlist(wishlist);
             }
@@ -34,14 +35,16 @@ const Wishlist = () =>{
         }
     }
 
-    const ItemToCart = async (id, productName, price, description) =>{
+    const ItemToCart = async (id, productName, price, description, imageUrl) =>{
         try{
             const token = localStorage.getItem("token");
             const response = await axios.post(`${apiUrl}/api/cart/update`,{
                 productId: id,
                 productName: productName,
                 price: price,
-                description: description
+                description: description,
+                imageUrl: imageUrl,
+                quantity: 1
             },
             {
                 headers: {Authorization: token}
@@ -81,7 +84,7 @@ const Wishlist = () =>{
             {userWishlist == undefined || userWishlist.length == 0 ? <p>Empty</p>: 
                 userWishlist.map(card => 
                     <div className="col-md-3 mb-4 col-sm-3" key={card._id}>
-                        <WishlistCard onRemove={ItemOutWishList} onAdd={ItemToCart} id={card._id} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
+                        <WishlistCard isAuctioning={card.isAuctioning} onRemove={ItemOutWishList} onAdd={ItemToCart} id={card._id} imageUrl={card.imageUrl} description={card.description} productName={card.productName} price={card.price}/>
                     </div>
                 )}
             </div>
@@ -90,7 +93,7 @@ const Wishlist = () =>{
                     <div className="wishlist-message">
                         <h3>Added To Your Cart!</h3>
                         <button onClick={() => setShowAddedMessage(false)}>Continue Shopping</button>
-
+                        <button onClick={() => navigate('/Cart')}>View Cart</button>
                     </div>
                 </div>
                     }
