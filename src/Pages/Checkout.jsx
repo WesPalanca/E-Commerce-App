@@ -34,6 +34,7 @@ const Checkout = () => {
             const response = await axios.post(`${apiUrl}/api/order/place`,{
                 total: total,
                 cart: items,
+                isBuyNow: isBuyNow
             
     
             },{

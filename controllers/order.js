@@ -1,13 +1,12 @@
 import User from '../models/User.js';
 import Order from '../models/Order.js';
+import Product from '../models/Product.js';
 import sendEmail from './emailService.js';
 
 export const placeOrder = async (req, res) => {
     try {
         const userId = req.user.userId;
-        const { cart, total } = req.body;
-
-        // Ensure that cart is an array of objects conforming to detailSchema
+        const { cart, total, isBuyNow } = req.body;
         const orderDetails = cart.map(product => ({
             productName: product.productName,
             price: product.price,
@@ -81,7 +80,9 @@ export const placeOrder = async (req, res) => {
         `;
 
         await sendEmail(email, subject, text);
-        user.cart = [];
+        if(!isBuyNow){
+            user.cart = [];
+        }
 
         await user.save();
         res.status(200).json({ success: true, message: "Order placed successfully" });

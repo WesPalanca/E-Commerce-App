@@ -95,7 +95,7 @@ const Cart = () =>{
                 
             </div>
             
-                <div className="cart-total">
+                {userCart.length != 0 && <div className="cart-total">
             
                     <p>Estimated total: <strong>${total}</strong></p>
                     <p>Review Your Products</p>
@@ -104,7 +104,7 @@ const Cart = () =>{
                         <button className="checkout-btn btn btn-primary" onClick={() => {navigate('/Checkout', {state: {total, items: userCart, isBuyNow: false}}); setUserCart([])}}>Continue to payment</button>
                     </div>
                 
-                </div>
+                </div>}
            </div>}
         
         </div>

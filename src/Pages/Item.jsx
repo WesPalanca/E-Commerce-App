@@ -244,7 +244,11 @@ const Item = () => {
 
   const handleBuyNow = () =>{
     const total = product.price * quantity;
-    const item = product;
+    const item = {
+      ...product,
+      quantity: quantity
+
+    };
     navigate('/Checkout', {state: {total, items: [item], isBuyNow: true}})
   }
 
