@@ -12,7 +12,7 @@ export const placeOrder = async (req, res) => {
             price: product.price,
             quantity: product.quantity
         }));
-
+    
         // Create and save the order
         const order = new Order({
             user: userId,
@@ -20,6 +20,18 @@ export const placeOrder = async (req, res) => {
             total: total
         });
         await order.save();
+        for (const product of cart){
+            const {_id, quantity} = product;
+            const productDoc = await Product.findById(_id);
+            if (!productDoc){
+                return res.status(404).json({success: false, message: `couldn't find product with id of ${_id}`});
+            }
+            if (quantity > productDoc.amountInStock){
+                return res.status(400).json({success: false, message: "not enough stock for the quantity"});
+            }
+            productDoc.amountInStock -= quantity;
+            await productDoc.save();
+        }
 
         // Retrieve user and send confirmation email
         const user = await User.findById(userId);

@@ -155,6 +155,7 @@ const Shop = () =>{
                             imageUrl={card.imageUrl} 
                             description={card.description}
                             productName={card.productName} 
+                            quantityOfBids={card.quantityOfBids}
                             isAuctioning={card.isAuctioning}
                             currentBid={card.currentBid}
                             price={card.price}

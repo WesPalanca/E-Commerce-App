@@ -21,12 +21,15 @@ const Item = () => {
   const [showCartedMessage, setShowCartedMessage] = useState(false);
   const [isHighestBidder, setIsHighestBidder] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  const [countdown, setCountdown] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [reviewData, setReviewData] = useState({
     rating: 0,
     comment: "",
   });
   const [quantity, setQuantity] = useState(1);
   const [bidStatusMessage, setBidStatusMessage] = useState("");
+  
 
   const fetchProduct = async () => {
     try {
@@ -41,6 +44,26 @@ const Item = () => {
         console.log(product);
         setOverallRating(product.overallRating);
         checkBiddingStatus();
+        if (product.isAuctioning && product.auctionEnd){
+          const endTime = new Date(product.auctionEnd);
+          const updateCountdown = () =>{
+            const now = new Date();
+            const timeLeft = endTime - now;
+            if (timeLeft <= 0){
+              setCountdown("Auction Ended")
+              clearInterval(countdownInterval)
+            }
+            else{
+              const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+              const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+              const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+              setCountdown(`${hours}h ${minutes}m ${seconds}s`);
+            }
+          };
+          const countdownInterval = setInterval(updateCountdown, 1000);
+          updateCountdown(); // Initial call to set the countdown immediately
+          return () => clearInterval(countdownInterval); // Cleanup interval on unmount
+        }
       } else {
         console.log(message);
       }
@@ -252,6 +275,11 @@ const Item = () => {
     navigate('/Checkout', {state: {total, items: [item], isBuyNow: true}})
   }
 
+  
+
+
+
+
   return (
     <div className="Item container">
       {product ? (
@@ -278,6 +306,7 @@ const Item = () => {
                 </p>
               ) : (
                 <div>
+                  <p>Ends in: {countdown}</p>
                   <p>
                     Current Bid: <strong>${product.currentBid}</strong>
                   </p>
