@@ -8,6 +8,7 @@ const Cart = () =>{
     const navigate = useNavigate();
     const [userCart, setUserCart] = useState();
     const [total, setTotal] = useState();
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() =>{
         setTotal(0);
         const token = localStorage.getItem("token");
@@ -25,7 +26,7 @@ const Cart = () =>{
             });
             const {success, cart, message } = (await response).data;
             if(success){
-                // console.log(message);
+                setIsLoading(false);
                 console.log(response.data);
                 setUserCart(cart);
             }
@@ -47,6 +48,7 @@ const Cart = () =>{
             const {success, cartTotal, message} = response.data;
             if(success){
                 setTotal(cartTotal);
+                
             }
             else{
                 console.log(message);
@@ -80,7 +82,7 @@ const Cart = () =>{
                 <Link to={'/Shop'}>back</Link>
             </div>
             <h1>Your Shopping Cart</h1>
-           <div className="cart-content">
+           {isLoading ? <p>Loading...</p> : <div className="cart-content">
             <div>
             <div className="cart-container "> 
                 {userCart == undefined || userCart.length == 0 ? <p>Your cart is empty </p>: 
@@ -99,11 +101,12 @@ const Cart = () =>{
                     <p>Review Your Products</p>
                     <div className="cart-total-buttons">
                         <button onClick={() =>navigate('/Shop')} className="btn btn-secondary">Continue Shopping</button>
-                        <button className="checkout-btn btn btn-primary" onClick={() => navigate('/Checkout')}>Continue to payment</button>
+                        <button className="checkout-btn btn btn-primary" onClick={() => {navigate('/Checkout', {state: {total, items: userCart, isBuyNow: false}}); setUserCart([])}}>Continue to payment</button>
                     </div>
                 
                 </div>
-           </div>
+           </div>}
+        
         </div>
     )
 }

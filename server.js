@@ -9,6 +9,7 @@ import prodRoutes from './routes/product.js';
 import cartRoutes from './routes/cart.js';
 import wishRoutes from './routes/wishlist.js';
 import bidRoutes from './routes/bid.js';
+import orderRoutes from './routes/order.js';
 
 dotenv.config();
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/prod', prodRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wish', wishRoutes);
 app.use('/api/bid', bidRoutes);
+app.use('/api/order', orderRoutes);
 
 io.on("connection", (socket) => {
     console.log("A user connected");

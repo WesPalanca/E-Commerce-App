@@ -242,6 +242,12 @@ const Item = () => {
     setReviewData({ ...reviewData, [e.target.id]: e.target.value });
   };
 
+  const handleBuyNow = () =>{
+    const total = product.price * quantity;
+    const item = product;
+    navigate('/Checkout', {state: {total, items: [item], isBuyNow: true}})
+  }
+
   return (
     <div className="Item container">
       {product ? (
@@ -331,7 +337,7 @@ const Item = () => {
                     Saved To Cart!
                   </button>
                 )}
-                <button className="btn btn-warning">Buy Now</button>
+                <button onClick={handleBuyNow} className="btn btn-warning">Buy Now</button>
                 {!isInWishlist ? (
                   <button
                     onClick={handleAddToWishlist}

@@ -1,8 +1,13 @@
-import { useState } from "react";
-import ReactInputMask from "react-input-mask";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import MaskedInput from "react-text-mask";
+import axios from "axios";
 
 const Checkout = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const {total, items, isBuyNow} = location.state || {};
+    const apiUrl = import.meta.env.VITE_API_URL;
     const [formData, setFormData] = useState({
         cardNumber: "",
         expiration: "",
@@ -15,11 +20,31 @@ const Checkout = () => {
         zip: "",
         phoneNumber: ""
     });
+    useEffect(() =>{
+        console.log(items);
+        console.log(total);
+    });
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log(formData);
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${apiUrl}/api/order/place`,{
+                total: total,
+                cart: items,
+            
+    
+            },{
+                headers: {Authorization: token}
+            });
+            const {success, message} = response.data;
+            if (success){
+                console.log(message);
+                navigate('/Shop');
+            }            
+            
         } catch (error) {
             console.log(error);
         }
