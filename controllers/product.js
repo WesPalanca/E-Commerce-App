@@ -6,7 +6,13 @@ import mongoose from "mongoose";
 
 export const getProducts = async(req, res) =>{
     try{
-        const allProducts = await Product.find({});
+        const allProducts = await Product.find({
+            $or: [
+                { auctionEnd: { $gt: new Date() } },  // Auction end time is in the future
+                { auctionEnd: { $exists: false } }    // Auction end time does not exist
+            ],
+            amountInStock: { $gt: 0 }
+        })
         res.status(200).json({success: true, allProducts, message: "Products fetched successfully"});
     }
     catch(error){
