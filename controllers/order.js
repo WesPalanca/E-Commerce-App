@@ -104,3 +104,95 @@ export const placeOrder = async (req, res) => {
         res.status(500).json({ success: false, message: "Something went wrong while placing the order" });
     }
 };
+
+
+export const bidOrder = async (req, res) =>{
+    try{
+        const userId = req.user.userId;
+        const {productId} = req.body;
+        const product = await Product.findById(productId);
+        if(!product) return res.status(404).json({success: false, message: "could not find product"});
+        const orderDetails = {
+            productName: product.productName,
+            price: product.currentBid,
+            quantity: product.quantity
+        }
+        const order = new Order({
+            user: userId,
+            orderDetails: orderDetails,
+            total: product.currentBid
+
+
+        });
+        product.amountInStock -= product.quantity;
+        await product.save();
+        await order.save();
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const { email, username, firstName, lastName } = user;
+
+        // HTML email body
+        const subject = "Order Confirmation";
+        const html = `
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+                    h1 { color: #333; }
+                    .order-details { margin-top: 20px; }
+                    .order-details table { width: 100%; border-collapse: collapse; }
+                    .order-details th, .order-details td { border: 1px solid #ddd; padding: 8px; }
+                    .order-details th { background-color: #f4f4f4; }
+                    .total { margin-top: 20px; font-size: 18px; font-weight: bold; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>Thank you for your order, ${username}!</h1>
+                    <p>Here are the details of your recent purchase:</p>
+                    <div class="order-details">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ProductId</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <tr>
+                                <td>${product._id}</td>
+                                <td>${product.productName}</td>
+                                <td>$${product.currentBid}</td>
+                            
+                               </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="total">
+                        Total: $${product.currentBid.toFixed(2)}
+                    </div>
+                    <p>Thank you for shopping with us!</p>
+                    <p>Best regards,<br>Your Company</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        await sendEmail(email, subject, html);
+
+
+
+        res.status(200).json({ success: true, message: "Order placed successfully" });
+
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({success: false, message: "Something went wrong while processing bid order"})
+    }
+}

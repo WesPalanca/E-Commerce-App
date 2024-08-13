@@ -48,7 +48,11 @@ io.on("connection", (socket) => {
     socket.on('disconnect', () => {
         console.log("User disconnected");
     })
-})
+});
+
+import("./cron/jobs.js").then(()=>{
+    console.log("Auction job scheduled")
+}).catch((err) => console.log("Error importing auction job: " + err))
 
 const PORT = process.env.PORT;
 

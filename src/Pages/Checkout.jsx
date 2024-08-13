@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import MaskedInput from "react-text-mask";
 import axios from "axios";
 
@@ -7,6 +7,7 @@ const Checkout = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const {total, items, isBuyNow} = location.state || {};
+    const {productId} = useParams();
     const apiUrl = import.meta.env.VITE_API_URL;
     const [formData, setFormData] = useState({
         cardNumber: "",
@@ -24,6 +25,31 @@ const Checkout = () => {
         console.log(items);
         console.log(total);
     });
+
+    const handleBid = async (e) =>{
+        e.preventDefault();
+        try{
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${apiUrl}/api/order/bid-place`,{
+                productId: productId
+                
+            },
+        {
+            headers: {Authorization: token}
+        });
+        const {success, message} = response.data;
+        if(success){
+            console.log(message);
+            navigate('/Shop');
+        }
+        else{
+            console.log(message);
+        }
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
 
 
 
@@ -59,7 +85,7 @@ const Checkout = () => {
         <div className="Checkout container">
             <h3>Checkout</h3>
             <p>Enter your card info</p>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={productId ? handleBid : handleSubmit}>
                 <div className="form-group">
                     <MaskedInput
                         className="form-control"
@@ -158,7 +184,7 @@ const Checkout = () => {
                     />
                 </div>
                 <div className="form-group">
-                    <button type="submit">Place Order</button>
+                    {productId ? <button type="submit">Place Bid Order</button> :<button type="submit">Place Order</button>}
                 </div>
             </form>
         </div>

@@ -18,6 +18,7 @@ const App = () =>{
           <Route path='/Wishlist' element={<Wishlist />} />
           <Route path="/Cart" element={<Cart />} />
           <Route path='/Checkout' element={<Checkout />} />
+          <Route path="/Checkout/:productId" element={<Checkout />} />
 
       </Routes>
   </Router>
