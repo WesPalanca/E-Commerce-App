@@ -2,14 +2,12 @@
 import Product from "../models/Product.js";
 import User from '../models/User.js';
 import Bid from "../models/Bid.js";
-import mongoose from "mongoose";
-
 export const getProducts = async(req, res) =>{
     try{
         const allProducts = await Product.find({
             $or: [
-                { auctionEnd: { $gt: new Date() } },  // Auction end time is in the future
-                { auctionEnd: { $exists: false } }    // Auction end time does not exist
+                { isAuctioning: true, auctionEnd: { $gt: new Date() } },  // Auction is active and end time is in the future
+                { isAuctioning: false }  // Product is not being auctioned
             ],
             amountInStock: { $gt: 0 }
         })
@@ -28,7 +26,10 @@ export const searchProducts = async(req, res) => {
 
 
         const products = await Product.find({
-            productName: {$regex: query, $options: "i"},
+            $or: [
+               { productName: {$regex: query, $options: "i"}},
+                {author: {$regex: query, $options: "i"}}
+            ]
         });
         if(products.length > 0){
             return res.status(200).json({message: "found products", products, success: true})
@@ -59,6 +60,9 @@ export const getProduct = async (req, res) => {
             const overallRating = (product.reviews.reduce((sum, review) => sum += review.rating, 0) / product.reviews.length).toFixed(1);
             updateData.overallRating = overallRating;
         }
+        else {
+            updateData.overallRating = 0;
+        }
 
         await Product.findByIdAndUpdate(
             productId,
@@ -77,7 +81,7 @@ export const getProduct = async (req, res) => {
 export const addReviewToProduct = async (req, res) =>{
     try{
         const userId = req.user.userId;
-        const {productId, rating, comment} = req.body;
+        const {productId, rating, comment, title} = req.body;
         if(comment == ""){
             return res.status(400).json({success:false, message: "comment is empty"});
         }
@@ -86,7 +90,8 @@ export const addReviewToProduct = async (req, res) =>{
         const reviewTemplate = {
             username: username,
             rating: rating,
-            comment: comment
+            comment: comment,
+            title: title
         }
         await Product.findOneAndUpdate(
             { _id: productId },
@@ -100,5 +105,66 @@ export const addReviewToProduct = async (req, res) =>{
     catch(error){
         console.log(error);
         res.status(500).json({success: false, message: "Soemting went wrong trying to add a review to product"})
+    }
+}
+
+
+
+
+export const newProduct = async (req, res) => {
+    try{
+        const userId = req.user.userId;
+        const user = await User.findById(userId);
+        if (!user){
+            return res.status(404).json({success: false, message: "could not find user"});
+        }
+        const { productName, 
+            price,
+            description,
+            amountInStock,
+            startingPrice,
+            auctionEnd,
+            isAuctioning, imageUrl} = req.body;
+        const newProduct = new Product({
+            author: user.username,
+            authorId: userId,
+            productName: productName, 
+            price: price,
+            description: description,
+            amountInStock: amountInStock,
+            imageUrl: imageUrl,
+            startingPrice: startingPrice,
+            auctionEnd: auctionEnd,
+            isAuctioning: isAuctioning
+            
+        });
+        await newProduct.save();
+        res.status(200).json({success: true, message: "added product"})
+
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({success: false, message: "Could not add new product to database"})
+        
+    }
+}
+
+
+export const fetchAuthorListings = async (req, res) =>{
+    console.log("fetching author listings");
+    try{
+        const {authorId} = req.query;
+        console.log(authorId);
+        const products = await Product.find({
+            authorId: authorId
+        });
+        if (!products){
+            return res.status(404).json({success: false, message: "could not find author products"});
+        }
+        res.status(200).json({success: true, message: "Got author products", products});
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).json({success: false, message: "Something when wrong fetching author listings."})
     }
 }
