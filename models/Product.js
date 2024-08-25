@@ -8,6 +8,8 @@ const reviewSchema = new mongoose.Schema({
 });
 
 export const productSchema = new mongoose.Schema({
+    author: {type: String, required: true},
+    authorId: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     isAuctioning: {type: Boolean, required: false, default: false},
     productName: {type: String, required: true},
     price: {type: Number, required: false},
@@ -15,7 +17,7 @@ export const productSchema = new mongoose.Schema({
     quantity: {type: Number, required: false, default: 1},
     amountInStock: {type: Number, required: false, default: 1},
     imageUrl: {type: String, required: false}, 
-    tags: {type: [String], required: false},
+    // tags: {type: [String], required: false},
     reviews: {type: [reviewSchema], required: false},
     overallRating: {type: Number, required: false},
     startingPrice: {type: Number, default: 0}, 
