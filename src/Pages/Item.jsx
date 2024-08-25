@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Review from "../components/Review";
 import io from "socket.io-client";
+import { Link } from "react-router-dom";
 
 const socket = io("http://localhost:3000");
 
@@ -26,6 +27,7 @@ const Item = () => {
   const [reviewData, setReviewData] = useState({
     rating: 0,
     comment: "",
+    title: ""
   });
   const [quantity, setQuantity] = useState(1);
   const [bidStatusMessage, setBidStatusMessage] = useState("");
@@ -166,6 +168,7 @@ const Item = () => {
   const addReview = async (e) => {
     e.preventDefault();
     try {
+      console.log(reviewData);
       const token = localStorage.getItem("token");
       const response = await axios.post(
         `${apiUrl}/api/prod/item/reviews`,
@@ -173,6 +176,7 @@ const Item = () => {
           productId: id,
           rating: parseFloat(reviewData.rating),
           comment: reviewData.comment,
+          title: reviewData.title
         },
         {
           headers: { Authorization: token },
@@ -182,7 +186,7 @@ const Item = () => {
 
       if (success) {
         console.log(message);
-        fetchProduct(); // Refresh the product data to show the new review
+        fetchProduct(); // Refresh thfe product data to show the new review
       } else {
         console.log(message);
       }
@@ -190,6 +194,7 @@ const Item = () => {
       setReviewData({
         rating: 0,
         comment: "",
+        title: ""
       });
       setShowReviewForm(false);
     } catch (error) {
@@ -286,12 +291,13 @@ const Item = () => {
         <div className="item-page row justify-content-between">
           <div className="item-content col-md-4 col-sm-2 order-first">
             <h2 className="header">{product.productName}</h2>
+            <p>posted by <Link to={`/user-listings/${product.authorId}/${product.author}`}><strong>{product.author}</strong></Link></p>
             <img className="item-img" src={product.imageUrl} alt="" />
-            <div className="item-tags">
+            {/* uncomment when able to create tags from sell <div className="item-tags">
               {product.tags.map((tag) => (
                 <li key={tag}>{tag}</li>
               ))}
-            </div>
+            </div> */}
           </div>
           <div className="item-description col-md-5">
             <h4>About this item</h4>
@@ -405,6 +411,7 @@ const Item = () => {
                     username={review.username}
                     rating={review.rating}
                     comment={review.comment}
+                    title={review.title}
                   />
                 ))}
               </div>
@@ -441,15 +448,24 @@ const Item = () => {
                       required
                     />
                   </div>
+                  <p><strong>Title</strong></p>
                   <div className="form-group">
-                    <input
+                    <input type="text" id="title" onChange={reviewChange} value={reviewData.title} className="review-form-title form-control"
+                      placeholder="Add title " />
+                  </div>
+                  <p><strong>Comment</strong></p>
+                  <div className="form-group col-md-6">
+                    <textarea
                       id="comment"
+                      className="review-form-comment form-control"
                       type="text"
-                      placeholder="Add your review"
                       value={reviewData.comment}
+                      placeholder="Add your review"
                       onChange={reviewChange}
                       required
-                    />
+                    >
+                      
+                    </textarea>
                   </div>
                   <button type="submit">Submit</button>
                   <button

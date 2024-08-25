@@ -136,7 +136,10 @@ const Shop = () =>{
     return(
         <div className="container Shop">
         <Sidebar  />
+        <div className="header container">
             <h1 className='shop-header'>Shopping</h1>
+        </div>
+    
             <form onSubmit={handleSearch} className="SearchForm">
                 <input 
                 placeholder="Search"
@@ -150,12 +153,13 @@ const Shop = () =>{
                 (
                 <div className="row product-card-container">
                     {products.map(card => 
-                        <div className="col-md-3 mb-4 col-sm-2" key={card._id}>
+                        <div className="col-6 col-md-3 mb-4" key={card._id}>
                             <ProductCard id={card._id} 
                             imageUrl={card.imageUrl} 
                             description={card.description}
                             productName={card.productName} 
                             quantityOfBids={card.quantityOfBids}
+                            startingPrice={card.startingPrice}
                             isAuctioning={card.isAuctioning}
                             currentBid={card.currentBid}
                             price={card.price}
@@ -163,6 +167,7 @@ const Shop = () =>{
                             OutCart={ItemOutCart}
                             ToWishList={ItemToWishList}
                             OutWishList={ItemOutWishList}
+                            author={card.author}
                             />
                             
                         </div>
