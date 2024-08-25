@@ -7,6 +7,9 @@ import Item from "./Pages/Item.jsx";
 import Wishlist from "./Pages/Wishlist.jsx";
 import Checkout from "./Pages/Checkout.jsx";
 import Cart from "./Pages/Cart.jsx";
+import Profile from "./Pages/Profile.jsx";
+import Sell from "./Pages/Sell.jsx";
+import AuthorListings from "./Pages/AuthorListings.jsx";
 
 const App = () =>{
   return(
@@ -19,6 +22,9 @@ const App = () =>{
           <Route path="/Cart" element={<Cart />} />
           <Route path='/Checkout' element={<Checkout />} />
           <Route path="/Checkout/:productId" element={<Checkout />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/sell" element={<Sell />} />
+          <Route path="/user-listings/:authorId/:author" element={<AuthorListings / >} />
 
       </Routes>
   </Router>

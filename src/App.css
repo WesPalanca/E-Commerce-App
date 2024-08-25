@@ -37,7 +37,6 @@
 .form-group{
   width: 200px;
   margin-top: 2px auto;
-  border: none !important;
   text-align: left;
   display: flex ;
 
@@ -45,7 +44,6 @@
 
 .form-control{
   width: 100%;
-  border: none !important; 
   
 }
 
@@ -59,12 +57,18 @@
   margin: 0 auto;
 }
 
+.header{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
 
 .shop-header{
   margin-top: 20px; /* Add space above the heading */
   text-align: center; /* Center align the heading */
   font-size: 2em; /* Adjust font size as needed */
   position: relative;
+  width: 200px;
 
 }
 .search-bar{
@@ -73,13 +77,14 @@
 
 
 .product-card-container {
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   height: 80vh;
   flex-wrap: wrap;
   padding: 10px;
-  margin: 0, auto;
+  margin: 10px, auto;
+  margin-right: 20px;
   
 }
 
@@ -97,8 +102,8 @@
 }
 .product-card{
   border: solid black 2px;
-  height: 305px;
-  width: 250px;
+  height: 445px;
+  width: 300px;
   margin: 10px;
 }
 
@@ -312,6 +317,7 @@
   width: 100%;
   flex-wrap: wrap;
 
+
 }
 .item-content{
   display: flex;
@@ -357,6 +363,7 @@
   margin-left: 0;
   
   
+  
 }
 
 .Item{
@@ -370,6 +377,7 @@
   flex-direction: column;
   align-items: flex-start;
   border: solid black 2px;
+  margin-bottom: 20px;
 }
 
 .item-description{
@@ -508,4 +516,106 @@
   transform: translate(-50%, -50%);
   height: 400px;
   width: 500px;
+}
+
+/* Checkbox Styles */
+.checkbox-apple {
+  position: relative;
+  display: inline-block; /* Ensure the checkbox is treated as an inline element */
+  width: 50px;
+  height: 25px;
+  margin-left: 5px;
+  user-select: none;
+}
+
+.checkbox-apple input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-apple label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  width: 50px;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 25px;
+  transition: background-color 0.4s;
+}
+
+.checkbox-apple label::after {
+  content: "";
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.4s;
+}
+
+.checkbox-apple input:checked + label {
+  background-color: #66bb6a;
+}
+
+.checkbox-apple input:checked + label::after {
+  transform: translateX(24px);
+}
+
+.sell-auction-label {
+  display: inline-block;
+  margin-right: 10px; /* Add space between the label and the checkbox */
+  font-weight: bold; /* Make the label text bold */
+  color: #333; /* Set the label color to a visible dark gray */
+  font-size: 16px; /* Increase the font size for better visibility */
+  vertical-align: middle; /* Align the label with the checkbox */
+  position: relative;
+  z-index: 1; /* Ensure the label is on top of the checkbox */
+}
+
+.Sell{
+  display: flex;
+  justify-content: center;
+}
+
+.product-creation{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: solid black 2px;
+}
+
+.review-form-comment {
+  height: 300px !important;
+  width: 100% !important;
+  border: solid black 2px !important;
+
+}
+
+.add-description{
+  height: 200px !important;
+  width: 100% !important;
+  border: solid black 2px !important;
+}
+.description-container{
+  width: 400px;
+}
+
+.standard-form, .auction-form{
+  height: 500px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.listing-container{
+  height: 80vh;
+  flex-wrap: wrap;
 }

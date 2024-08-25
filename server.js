@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI,{
 })
 .then(console.log("Connected to MongoDB"))
 .catch((error) => console.log("Error connecting to database " + error));
-
+app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 app.use('/api/prod', prodRoutes);
 app.use('/api/cart', cartRoutes);
