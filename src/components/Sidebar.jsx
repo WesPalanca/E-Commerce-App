@@ -1,11 +1,16 @@
 import { useState } from "react"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Sidebar = (props) =>{
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
     
     const toggleSidebar = () =>{
         setIsOpen(!isOpen);
+    }
+    const logout = () =>{
+        localStorage.removeItem("token");
+        navigate('/');
     }
 
     return (
@@ -16,6 +21,7 @@ const Sidebar = (props) =>{
                     <Link to={'/Profile'}>Profile</Link>
                     <Link to={'/Cart'}>Cart</Link>
                     <Link to={'/WishList'}>WishList</Link>
+                    <button className="btn btn-danger" onClick={logout}>Logout</button>
 
                 </div>
             </div>}

@@ -45,8 +45,9 @@ const ProductCard = (props) =>{
             <div className="product-card">
             <Link to={`/Item/${props.id}/${props.productName}`}><img className="product-img" src={props.imageUrl} alt="" /></Link>
             <div className="product-card-label">
-            <Link className="header" to={`/Item/${props.id}/${props.productName}`}>{props.productName}</Link>
-            {props.isAuctioning && props.quantityOfBids > 0 ? <p>${props.currentBid}</p> 
+           <p> <Link className="header" to={`/Item/${props.id}/${props.productName}`}>{props.productName}</Link> by {props.author}</p>
+           
+            {props.isAuctioning && !props.currentBid ? <p>${props.startingPrice}</p> :props.isAuctioning && props.quantityOfBids > 0 ? <p>${props.currentBid}</p> 
             : <p>${props.price}</p>}
             
                 <div className="product-card-buttons">
