@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.654.0",
+    "@aws-sdk/middleware-sdk-s3": "^3.654.0",
+    "@aws-sdk/middleware-stack": "^3.374.0",
+    "@aws-sdk/s3-request-presigner": "^3.654.0",
+    "aws-sdk": "^2.1691.0",
     "axios": "^1.7.3",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
@@ -17,9 +22,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "heic-convert": "^2.1.0",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.2",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
     "react": "^18.3.1",
@@ -27,6 +35,7 @@
     "react-input-mask": "^2.0.4",
     "react-router-dom": "^6.25.1",
     "react-text-mask": "^5.5.0",
+    "sharp": "^0.33.5",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "titlecase": "^1.1.3"

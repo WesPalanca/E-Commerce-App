@@ -21,7 +21,8 @@ const Sidebar = (props) =>{
                     <Link to={'/Profile'}>Profile</Link>
                     <Link to={'/Cart'}>Cart</Link>
                     <Link to={'/WishList'}>WishList</Link>
-                    <button className="btn btn-danger" onClick={logout}>Logout</button>
+                    <Link to={'/sell'}>Sell</Link>
+                    <button className="logout-button btn btn-danger" onClick={logout}>Logout</button>
 
                 </div>
             </div>}

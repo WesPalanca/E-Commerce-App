@@ -153,7 +153,7 @@ const Shop = () =>{
                 (
                 <div className="row product-card-container">
                     {products.map(card => 
-                        <div className="col-6 col-md-3 mb-4" key={card._id}>
+                        <div className="col-md-4 mb-2" key={card._id}>
                             <ProductCard id={card._id} 
                             imageUrl={card.imageUrl} 
                             description={card.description}

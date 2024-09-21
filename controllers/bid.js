@@ -1,6 +1,19 @@
 import Bid from '../models/Bid.js';
 import Product from '../models/Product.js';
 
+/**
+ * Places bid on current auctioning product.
+ * @function
+ * @async
+ * @param {Object} req - Incoming request object containing the product's ID.
+ * @param {Object} res - Response that gives feedback to the client.
+ * @returns {Promise<void>} - A promise that resolves when the bid is successfully placed.
+ * @description
+ * - Returns 404 status if product cannot be found, 400 if the auction has already ended or the bid is smaller than the current bid.
+ * - Records the bid in the Bid collection.
+ * - Updates the current bid amount, the highest bidder, and amount of bids on the product.
+ */
+
 export const placeBid = async (req, res) => {
     try{
         const productId = req.body.productId;
@@ -32,6 +45,15 @@ export const placeBid = async (req, res) => {
     }
 }
 
+/**
+ * Gets the user's status on the auction of the product.
+ * @function
+ * @async
+ * @param {Object} req - Incoming request that contains the products ID.
+ * @param {Object} res - Response to the client that gives feedback on the users status on the product.
+ * @returns {Promise<void>} - Promise resolves when the user successfully receives feedback on bidder status.
+ * 
+ */
 export const getUserBidStatus = async (req, res) =>{
     try{
         const productId = req.query.productId;

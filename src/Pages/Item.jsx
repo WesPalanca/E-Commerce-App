@@ -287,6 +287,9 @@ const Item = () => {
 
   return (
     <div className="Item container">
+       <div className="back-link">
+                <Link to={'/Shop'}>back</Link>
+            </div>
       {product ? (
         <div className="item-page row justify-content-between">
           <div className="item-content col-md-4 col-sm-2 order-first">
@@ -323,6 +326,7 @@ const Item = () => {
               <input
                 type="number"
                 value={bidAmount}
+                className="item-bid-input"
                 onChange={(e) => setBidAmount(e.target.value)}
                 placeholder="Enter bid amount"
               />

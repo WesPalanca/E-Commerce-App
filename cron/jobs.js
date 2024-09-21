@@ -4,7 +4,7 @@ import Product from '../models/Product.js';
 import User from '../models/User.js';
 
 cron.schedule
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 0 * * *', async () => {
     console.log('Checking for ended auctions...');
     const now = new Date();
 

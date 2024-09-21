@@ -7,7 +7,7 @@ const CartCard = (props) =>{
         <div className="container Cart">
             <div className="cart-card">
                 <img src={props.imageUrl} className="cart-img" />
-                <div className="cardIdentifiers">
+                <div className="cardIdentifiers">   
                     <Link to={`/Item/${props.id}/${props.productName}`}>{props.productName}</Link>
                 </div>
                 <div className="cardSecondary">

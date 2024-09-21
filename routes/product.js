@@ -1,5 +1,6 @@
 import { addReviewToProduct, fetchAuthorListings, getProduct, getProducts, newProduct, searchProducts } from '../controllers/product.js';
 import { verifyToken } from '../middleware/auth.js';
+import {upload, uploadToS3} from '../middleware/image.js';
 import express from 'express';
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router.get("/products", getProducts);
 router.get('/products/search', searchProducts);
 router.get('/products/item', getProduct); //api/prod/products/item
 router.post('/item/reviews', verifyToken, addReviewToProduct); //api/prod/item/review
-router.post('/products/new', verifyToken, newProduct); //api/prod/products/new
+router.post('/products/new', verifyToken, upload, uploadToS3, newProduct); //api/prod/products/new
 router.get('/author-listings', fetchAuthorListings); //api/prod/author-listings
 
 

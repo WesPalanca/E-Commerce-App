@@ -118,13 +118,19 @@ export const newProduct = async (req, res) => {
         if (!user){
             return res.status(404).json({success: false, message: "could not find user"});
         }
+        if (!req.file){
+            res.status(500).json({success: false, message: "No image uploaded"});
+        }
+        const imageUrl = req.file.location;
         const { productName, 
             price,
             description,
             amountInStock,
             startingPrice,
             auctionEnd,
-            isAuctioning, imageUrl} = req.body;
+            isAuctioning} = req.body;
+
+            
         const newProduct = new Product({
             author: user.username,
             authorId: userId,

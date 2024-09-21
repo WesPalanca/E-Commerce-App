@@ -19,16 +19,15 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
+  /* background-color: rgb(235, 210, 180); */
   height: 100vh;
-  width: 100vw;
+  width: 100%;
 
 }
 
 .Shop{
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: 100vh;
 
 }
@@ -63,10 +62,13 @@
   justify-content: center;
 }
 
+
+
+
 .shop-header{
   margin-top: 20px; /* Add space above the heading */
   text-align: center; /* Center align the heading */
-  font-size: 2em; /* Adjust font size as needed */
+  font-size: 3em; /* Adjust font size as needed */
   position: relative;
   width: 200px;
 
@@ -75,18 +77,24 @@
   margin-bottom: 20px;
 }
 
-
-.product-card-container {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-  flex-wrap: wrap;
-  padding: 10px;
-  margin: 10px, auto;
-  margin-right: 20px;
-  
+.product-card{
+  border: solid black 3px;
+  height: 400px;
+  width: 300px;
+  margin: 10px;
+  background-color: #ffffff68;
 }
+.product-card-header{
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  font-size: 16pt;
+}
+.product-card-header:hover{
+  text-decoration: underline;
+}
+
 
 
 .product-card-label{
@@ -100,12 +108,7 @@
   justify-content: center;
   gap: 50px;
 }
-.product-card{
-  border: solid black 2px;
-  height: 445px;
-  width: 300px;
-  margin: 10px;
-}
+
 
 @media (max-width: 1024px) {
   .product-card {
@@ -158,7 +161,8 @@
   border: black 2px;
 } /* make back link more appealing soon */
 
-.sidebar{
+/* Sidebar styles */
+.sidebar {
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -168,29 +172,38 @@
   border: solid black 2px;
   top: 0;
   left: 0;
-  
+  transition: left .2s ease;
 }
-.toggle-sidebar{
+
+/* Sidebar toggle button styles */
+.toggle-sidebar {
   position: fixed;
   top: 0;
   border: none;
   background-color: grey;
 }
-.toggle-sidebar.close{
+
+.toggle-sidebar.close {
   left: 0;
-}
-.toggle-sidebar.open{
-  left: 200px;
+  transition: left .2s ease;
 }
 
-.sidebar-content{
+.toggle-sidebar.open {
+  left: 200px;
+  transition: left .2s ease;
+}
+
+/* Sidebar content styles */
+.sidebar-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100%;
+  transition: all 1s ease;
 }
-.sidebar-content a{
+
+.sidebar-content a {
   margin-top: 20px;
   text-decoration: none;
   font-size: 14pt;
@@ -201,17 +214,17 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
-
 }
-.sidebar-content img{
+
+.sidebar-content img {
   width: 60px;
   height: 33px;
   position: fixed;
   z-index: 1;
   left: 105px;
-
 }
-.sidebar-content p{
+
+.sidebar-content p {
   margin: 0;
   width: 2px;
   position: absolute;
@@ -220,16 +233,14 @@
   font-size: 6pt;
   top: 65px;
   left: 92px;
-
-
 }
 
-
-
-.sidebar-content a:hover{
+/* Hover effect for links */
+.sidebar-content a:hover {
   border: black 2px;
-  color: black
+  color: black;
 }
+
 
 
 
@@ -329,7 +340,21 @@
 }
 
 .item-bidding{
+  display: flex;
+  flex-direction: column;
   border: solid black 2px;
+  
+}
+.item-bidding input{
+  margin-top: 10px;
+  width: 150px;
+}
+
+.item-bidding button{
+  width: 150px;
+  margin-top: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 .item-pricing{
   border: solid black 2px
@@ -618,4 +643,11 @@
 .listing-container{
   height: 80vh;
   flex-wrap: wrap;
+}
+
+
+.logout-button{
+  position: fixed;
+  bottom: 0;
+  margin-bottom: 20px;
 }
