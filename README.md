@@ -1,8 +1,16 @@
-# React + Vite
+# Wes Shop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Tech Stack
 
-Currently, two official plugins are available:
+Used the MERN stack for the basic e-commerce app functionality; selling, saving, and buying products. SocketIO for real time bidding. AWS S3 buckets for saving and accessing images.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Challenges
+
+One of the biggest challenges I faced when building this project was image uploading using AWS S3 buckets for selling products. At first I thought about using plain multer to store and server the images locally. However I wanted to practice using a technology that would be scalable for a larger purpose. This was difficult at first, going through trial and error figuring out the CORS configuration, bucket policies, and image format.
+
+## How to run
+
+frontend
+npm run dev
+backend
+node server.js
